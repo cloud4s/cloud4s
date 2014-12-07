@@ -26,8 +26,9 @@ function encryptFile(file) {
         // use Blob to save encrypted file
         var blob = new Blob([ciphertext], { type: 'text/plain' });
         var filename = file.name+'.encrypted';
-        saveAs(blob, filename);
-
+        var result = saveAs(blob, filename);
+        $('#fileName').val(filename);
+        $('#uploadForm').submit();
         $('#encrypt-file-time').html(((t2 - t1)/1000)+'s'); // display time taken
         $('body').css({'cursor':'default'});
     }
@@ -56,7 +57,7 @@ function decryptFile(file) {
         // use Blob to save decrypted file
         var blob = new Blob([contentBytes], { type: 'application/octet-stream' });
         var filename = file.name.replace(/\.encrypted$/,'');
-       var result = saveAs(blob, filename);
+        saveAs(blob, filename);
 
         $('#decrypt-file-time').html(((t2 - t1)/1000)+'s'); // display time taken
         $('body').css({'cursor':'default'});

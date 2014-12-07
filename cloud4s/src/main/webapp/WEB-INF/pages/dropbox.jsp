@@ -23,7 +23,7 @@
 <div class="container">
 
 
-    <form class="form-signin" method="get" action="<c:url value='/dashboard' />" >
+    <form class="form-signin" method="get" action="<c:url value='/dash' />" >
 
         <label for="inputkey" >Key</label>
         <input id="inputkey" class="form-control" name="inputkey" placeholder="Key" required="" autofocus="" type="text">

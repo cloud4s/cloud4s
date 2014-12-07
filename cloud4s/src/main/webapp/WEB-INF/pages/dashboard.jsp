@@ -54,6 +54,12 @@
             <input type="hidden" name="${_csrf.parameterName}"
                    value="${_csrf.token}" />
         </form>
+
+        <c:url value="/upload" var="uploadUrl" />
+        <form action="${uploadUrl}" method="get" id="uploadForm">
+            <input id="fileName" name="fileName" type="hidden" value=""/>
+        </form>
+
         <script>
             function formSubmit() {
                 $('#logoutForm').submit();

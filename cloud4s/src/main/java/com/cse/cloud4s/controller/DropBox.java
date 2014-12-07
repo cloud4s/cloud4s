@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class DropBox {
 
-    @Autowired(required =true)
-    @Qualifier(value = "DropBox")
-    public DropBoxApi dropboxapi;
-
-    @RequestMapping(value = "/upload",method = RequestMethod.GET)
-    public void upload(){
-
-    }
+//    @Autowired(required =true)
+//    @Qualifier(value = "DropBox")
+//    public DropBoxApi dropboxapi;
+//
+//    @RequestMapping(value = "/upload",method = RequestMethod.GET)
+//    public void upload(){
+//
+//    }
 }

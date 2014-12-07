@@ -17,6 +17,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import com.cse.cloud4s.dao.UserDao;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -33,6 +35,8 @@ import com.dropbox.core.*;
 
 @Controller
 public class MainController {
+
+    private static Logger LOG = LoggerFactory.getLogger(MainController.class);
 
     @Qualifier("DropBox")
     @Autowired
@@ -68,6 +72,8 @@ public class MainController {
         ModelAndView model = new ModelAndView();
         try {
             dropboxapi.connect();
+            LOG.info("created connnection to dropbox");
+
         } catch (IOException e) {
             e.printStackTrace();
         } catch (DbxException e) {
@@ -78,7 +84,7 @@ public class MainController {
 
     }
 
-    @RequestMapping(value = { "/dashboard**" }, method = RequestMethod.GET)
+    @RequestMapping(value = { "/dash" }, method = RequestMethod.GET)
     public ModelAndView dashboardPage(@ModelAttribute("inputkey")String code, BindingResult result) {
 
         ModelAndView model = new ModelAndView();
@@ -89,6 +95,7 @@ public class MainController {
         } else {
             try {
                 client=dropboxapi.verify(code);
+//                dropboxapi.uploadFile(client,"C:/Users/hp/Downloads/dashboard.jsp","/dashboard.jsp");
                 dropboxapi.loadfiles(client);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -103,13 +110,28 @@ public class MainController {
 
     }
 
-    @RequestMapping(value = { "/upload**" }, method = RequestMethod.GET)
-    @ResponseBody
-    public ModelAndView uploadPage() {
+    @RequestMapping(value = { "/upload" }, method = RequestMethod.GET)
+    public ModelAndView uploadPage(@ModelAttribute("fileName")String filename,
+                                   BindingResult result) {
 
         ModelAndView model = new ModelAndView();
+        String LocalPath="C:/Users/hp/Downloads/"+filename;
+        String DropboxPath="/"+filename;
 
-        model.setViewName("upload");
+
+
+        try {
+            Thread.sleep(5000);
+            dropboxapi.uploadFile(client,LocalPath,DropboxPath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (DbxException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        model.setViewName("dashboard");
         return model;
 
     }
@@ -137,6 +159,16 @@ public class MainController {
 //
 //
 //    }
+    @RequestMapping(value = { "/dashboard**" }, method = RequestMethod.GET)
+    public ModelAndView dashboard() {
+
+    ModelAndView model = new ModelAndView();
+
+
+    model.setViewName("dashboard");
+    return model;
+
+}
     @RequestMapping(value = { "/signup**" }, method = RequestMethod.GET)
     public ModelAndView signup() {
 
