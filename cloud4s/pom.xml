@@ -153,6 +153,13 @@
             <version>${servletapi.version}</version>
             <scope>provided</scope>
         </dependency>
+        <!--drop box sdk-->
+        <dependency>
+            <groupId>com.dropbox.core</groupId>
+            <artifactId>dropbox-core-sdk</artifactId>
+            <version>1.7.7</version>
+        </dependency>
+
 
     </dependencies>
 

@@ -1,0 +1,105 @@
+package com.cse.cloud4s.service.Impl;
+
+import com.cse.cloud4s.service.DropBoxApi;
+import org.springframework.stereotype.Service;
+
+import com.dropbox.core.*;
+import java.io.*;
+import java.util.Locale;
+import java.awt.*;
+
+/**
+ * Created by hp on 12/5/2014.
+ */
+
+@Service("DropBox")
+public class DropBoxApiImpl implements DropBoxApi {
+    static String url;
+    static DbxRequestConfig config;
+    static DbxWebAuthNoRedirect webAuth;
+
+//    public DbxWebAuthNoRedirect connect() throws IOException,DbxException {         //connect to dropbox .returns object of DbxClient.APP_KEY and APP_SECRET should be developers one.
+    public void connect() throws IOException,DbxException {         //connect to dropbox .returns object of DbxClient.APP_KEY and APP_SECRET should be developers one.
+
+        final String APP_KEY = "fs8foggwxwv107a";
+        final String APP_SECRET = "r1xnydvhr3m6l55";
+
+        DbxAppInfo appInfo = new DbxAppInfo(APP_KEY, APP_SECRET);
+
+      this.config = new DbxRequestConfig("JavaTutorial/1.0",
+                Locale.getDefault().toString());
+
+        DbxWebAuthNoRedirect webAuth = new DbxWebAuthNoRedirect(config, appInfo);
+
+        // Have the user sign in and authorize your app.
+        String authorizeUrl = webAuth.start();
+        System.out.println("1. Go to: " + authorizeUrl);
+        System.out.println("2. Click \"Allow\" (you might have to log in first)");
+        System.out.println("3. Copy the authorization code.");
+        Desktop.getDesktop().browse(java.net.URI.create(authorizeUrl));
+
+//            String code = this.getCode(authorizeUrl);
+        this.webAuth=webAuth;
+//        return webAuth;
+    }
+
+//     public DbxClient verify(DbxWebAuthNoRedirect webAuth)throws IOException,DbxException{
+     public DbxClient verify(String code)throws IOException,DbxException{
+
+//        String code = new BufferedReader(new InputStreamReader(System.in)).readLine().trim(); //Code should be pasted to console
+
+        // This will fail if the user enters an invalid authorization code.
+        DbxAuthFinish authFinish = webAuth.finish(code);
+
+        DbxClient client = new DbxClient(config, authFinish.accessToken);
+
+        System.out.println("Linked account: " + client.getAccountInfo().displayName);
+        System.out.println("Details: "+ client.getAccountInfo().country);
+
+        return client;
+
+    }
+
+    public void uploadFile(DbxClient client,String name,String path) throws IOException,DbxException{ //uploading file..should identify path name and path
+
+
+        File inputFile = new File(name);
+        FileInputStream inputStream = new FileInputStream(inputFile);
+        try {
+
+            DbxEntry.File uploadedFile = client.uploadFile(path,
+                    DbxWriteMode.add(), inputFile.length(), inputStream);
+            System.out.println("Uploaded: " + uploadedFile.toString());
+            url=uploadedFile.path;
+
+        } finally {
+            inputStream.close();
+        }
+
+
+
+    }
+
+    public void downloadfile(DbxClient client,String filename,String dest_path) throws DbxException,IOException{ //file name should be in string of downloading file.path should be where to be downloaded
+        FileOutputStream outputStream = new FileOutputStream(filename);
+        try {
+            DbxEntry.File downloadedFile = client.getFile(dest_path,null,outputStream);
+            System.out.println("Metadata: " + downloadedFile.toString());
+        } finally {
+            outputStream.close();
+        }
+
+
+    }
+
+    public void loadfiles(DbxClient client) throws DbxException { //loading details of files.  only printing name and icon name.there are other attributes also.eg: child.attr
+        DbxEntry.WithChildren listing = client.getMetadataWithChildren("/");
+        System.out.println("Files in the root path:");
+        for (DbxEntry child : listing.children) {
+            System.out.println("    " + child.name + ": " + child.iconName+":");
+        }
+    }
+
+
+
+}

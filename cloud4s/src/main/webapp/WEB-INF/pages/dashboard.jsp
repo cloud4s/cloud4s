@@ -23,6 +23,29 @@
 
     <script src='<c:url value="/js/dropdown.js" />' type="text/javascript"></script>
     <script src='<c:url value="/js/jquery-2.0.0.js" />' type="text/javascript"></script>
+    <script src='<c:url value="/js/bootstrap-filestyle-0.1.0.js" />' type="text/javascript"></script>
+
+    <!--AES sripts-->
+    <script src="js/aes/jquery.js"></script>
+    <script src="js/aes/aes.js"></script>
+    <script src="js/aes/aes-ctr.js"></script>
+    <script src="js/aes/aes-ctr-file.js"></script>
+    <script src="js/aes/file-saver.js"></script>
+    <script src="js/aes/mtl.js"></script>
+    <script src="js/aes/prettify.js"></script>
+
+    <!--RSA scripts-->
+    <script src="js/rsa/aes.js"></script>
+    <script src="js/rsa/rsa.js"></script>
+    <script src="js/rsa/api.js"></script>
+    <script src="js/rsa/cryptico.js"></script>
+    <script src="js/rsa/cryptico.min.js"></script>
+    <script src="js/rsa/hash.js"></script>
+    <script src="js/rsa/jsbn.js"></script>
+    <script src="js/rsa/random.js"></script>
+    <script src="js/rsa/jsencrypt.js"></script>
+
+    <script src="js/main.js"></script>
 
     <sec:authorize access="hasRole('ROLE_USER')">
         <!-- For login user -->
@@ -87,7 +110,11 @@
         <div class="collapse navbar-collapse navbar-ex1-collapse">
             <ul class="nav navbar-nav side-nav">
                 <li>
-                    <a href="/upload"><input value="Upload" class="btn btn-lg btn-primary" width="150px"/></a>
+                    <input name="password-file" id="password-encrpt" value="1234" type="text" hidden="hidden">
+
+                    <input name="src-file" id="src-file" onchange="encryptFile(this.files[0])" type="file" value="Upload" class="btn btn-lg btn-primary">
+                        <%--<input id="uploadButton" value="Upload" class="btn btn-lg btn-primary" width="150px"/>--%>
+
                 </li>
                 <li class="active">
                     <a href="dashboard.html"><i class="fa fa-fw fa-dashboard"></i> My Files</a>

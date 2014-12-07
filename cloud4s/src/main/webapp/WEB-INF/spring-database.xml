@@ -36,6 +36,7 @@
                 </prop>
                 <prop key="hibernate.format_sql">true</prop>
                 <prop key="hibernate.show_sql">true</prop>
+                <!--<prop key="hibernate.hbm2ddl.auto">update</prop>-->
             </props>
         </property>
     </bean>
@@ -44,8 +45,14 @@
         <property name="sessionFactory" ref="sessionFactory" />
     </bean>
 
+
+
     <bean id="myUserDetailsService"
           class="com.cse.cloud4s.service.MyUserDetailsService">
+        <property name="userDao" ref="userDao" />
+    </bean>
+
+    <bean id="addUser" class="com.cse.cloud4s.service.Impl.addUserImpl">
         <property name="userDao" ref="userDao" />
     </bean>
 

@@ -5,15 +5,22 @@ package com.cse.cloud4s.dao;
  */
 import java.util.ArrayList;
 import java.util.List;
+
+import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 
 import com.cse.cloud4s.model.User;
+import com.cse.cloud4s.model.UserRole;
+
+//import javax.transaction.Transaction;
 
 public class UserDaoImpl implements UserDao {
 
     private SessionFactory sessionFactory;
 
     @SuppressWarnings("unchecked")
+
     public User findByUserName(String username) {
 
         List<User> users = new ArrayList<User>();
@@ -27,6 +34,32 @@ public class UserDaoImpl implements UserDao {
         } else {
             return null;
         }
+
+    }
+
+
+
+    @SuppressWarnings("unchecked")
+    public void saveUser(String username,String Password){
+        Session session=this.sessionFactory.openSession();
+        session.beginTransaction();
+
+        User user=new User();
+        UserRole userrole=new UserRole();
+
+        user.setUsername(username);
+        user.setPassword(Password);
+        user.setEnabled(true);
+//        user.setUserRole();
+        userrole.setUser(user);
+        userrole.setRole("ROLE_USER");
+
+
+        session.save(user);
+        session.save(userrole);
+
+        session.getTransaction().commit();
+        session.close();
 
     }
 

@@ -3,24 +3,51 @@ package com.cse.cloud4s.controller;
 /**
  * Created by hp on 12/3/2014.
  */
+import com.cse.cloud4s.dao.UserDaoImpl;
+import com.cse.cloud4s.service.DropBoxApi;
+import com.cse.cloud4s.service.addUser;
+import com.dropbox.core.DbxException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import com.cse.cloud4s.dao.UserDao;
+
+import java.io.IOException;
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.Locale;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+
+import com.dropbox.core.*;
 
 @Controller
 public class MainController {
+
+    @Qualifier("DropBox")
+    @Autowired
+    private DropBoxApi dropboxapi;
+
+    public UserDao userdao;
+
+    DbxClient client;
 
     @RequestMapping(value = { "/","welcome" }, method = RequestMethod.GET)
     public ModelAndView defaultPage() {
 
         ModelAndView model = new ModelAndView();
-        model.addObject("message", "Welcome to Cloud4s!");
+        model.addObject("title", "Spring Security Login Form - Database Authentication");
+        model.addObject("message", "This is default page!");
         model.setViewName("hello");
         return model;
 
@@ -35,8 +62,49 @@ public class MainController {
         return model;
 
     }
+    @RequestMapping(value = { "/dropbox**" }, method = RequestMethod.GET)
+    public ModelAndView popupform() {
 
-    @RequestMapping(value = { "/upload" }, method = RequestMethod.GET)
+        ModelAndView model = new ModelAndView();
+        try {
+            dropboxapi.connect();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (DbxException e) {
+            e.printStackTrace();
+        }
+        model.setViewName("dropbox");
+        return model;
+
+    }
+
+    @RequestMapping(value = { "/dashboard**" }, method = RequestMethod.GET)
+    public ModelAndView dashboardPage(@ModelAttribute("inputkey")String code, BindingResult result) {
+
+        ModelAndView model = new ModelAndView();
+
+        if (result.hasErrors()) {
+            model.setViewName("welcome");
+            return model;
+        } else {
+            try {
+                client=dropboxapi.verify(code);
+                dropboxapi.loadfiles(client);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (DbxException e) {
+                e.printStackTrace();
+            }
+
+            model.setViewName("dashboard");
+            return model;
+        }
+
+
+    }
+
+    @RequestMapping(value = { "/upload**" }, method = RequestMethod.GET)
+    @ResponseBody
     public ModelAndView uploadPage() {
 
         ModelAndView model = new ModelAndView();
@@ -46,12 +114,36 @@ public class MainController {
 
     }
 
-    @RequestMapping(value = { "/dashboard**" }, method = RequestMethod.GET)
-    public ModelAndView dashboardPage() {
+//    @RequestMapping(value = { "/saveuser**" }, method = RequestMethod.POST)
+////    @RequestMapping(value =“/result”, method = RequestMethod.POST)
+//
+//    public ModelAndView saveUser(@ModelAttribute("inputName")String username,
+//                                 @ModelAttribute("inputEmail")String email,
+//                                 @ModelAttribute("inputPassword")String password,
+//                                 @ModelAttribute("inputKey")String masterkey,
+//                                 BindingResult result) {
+//
+//        ModelAndView model = new ModelAndView();
+//        userdao=new UserDaoImpl();
+//
+//        if(result.hasErrors()){
+//            model.setViewName("welcome");
+//            return model;
+//        }else{
+//            userdao.saveUser(username,password);
+//            model.setViewName("login");
+//            return model;
+//        }
+//
+//
+//    }
+    @RequestMapping(value = { "/signup**" }, method = RequestMethod.GET)
+    public ModelAndView signup() {
 
         ModelAndView model = new ModelAndView();
 
-        model.setViewName("dashboard");
+
+        model.setViewName("signup");
         return model;
 
     }

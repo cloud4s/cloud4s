@@ -74,7 +74,7 @@
 
 
         <%--images.................--%>
-        <a href="/dashboard"><img class="img-thumbnail img-adjust" src="/images/dropbox.png" alt="Drop Box"></a>
+        <a href="/dropbox"><img class="img-thumbnail img-adjust" src="/images/dropbox.png" alt="Drop Box"></a>
         <a href=""><img class="img-thumbnail img-adjust" src="/images/drive.png"  alt="Drive"></a>
         <a href=""><img class="img-thumbnail img-adjust" src="/images/skydrive.png" alt="Sky Drive"></a>
         <a href=""><img class="img-thumbnail img-adjust"src="/images/amazone.png" alt="Drop Box advanced"></a>

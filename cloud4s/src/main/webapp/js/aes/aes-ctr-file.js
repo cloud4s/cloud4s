@@ -56,7 +56,7 @@ function decryptFile(file) {
         // use Blob to save decrypted file
         var blob = new Blob([contentBytes], { type: 'application/octet-stream' });
         var filename = file.name.replace(/\.encrypted$/,'');
-        saveAs(blob, filename);
+       var result = saveAs(blob, filename);
 
         $('#decrypt-file-time').html(((t2 - t1)/1000)+'s'); // display time taken
         $('body').css({'cursor':'default'});
