@@ -1,0 +1,63 @@
+﻿div{
+            /*border: 2px solid;*/
+            border-color:#808080;
+            width:800px;
+            top:30px;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: auto;
+            padding:10px;
+            box-shadow: 5px 5px 5px 5px #969696;
+            
+        }
+         textarea {
+	        width: 350px;
+	        height: 70px;
+	        /*border: 2px solid #cccccc;*/
+            color:white;
+	        padding: 5px;
+            margin:10px;
+	        font-family: Tahoma, sans-serif;
+	        background-color:black;
+	        background-position: bottom right;
+	        background-repeat: no-repeat;
+            box-shadow: 0 0 5px 1px #969696;
+        }
+         input{
+             color:#2431c1;
+              padding: 10px;
+              border: solid 1px #dcdcdc;
+              transition: box-shadow 0.3s, border 0.3s;
+              margin:10px;
+              width:300px;
+         }
+        input:focus{
+              border: solid 1px #707070;
+              box-shadow: 0 0 5px 1px #969696;
+         }
+        :-ms-input-placeholder { /* Internet Explorer 10+ */
+              color: #808080;
+        }
+
+        label {
+            color: #9f2727;
+            font-weight: bold;
+            display: block;
+            width: 150px;
+            float: left;
+            font-size:20px;
+        }
+        button{
+            height:50px;
+            width:200px;
+            margin:10px;
+            padding:5px;
+            background-color: #2431c1;
+            border-radius:5px;
+            color:white;
+        }
+        select{
+            height:50px;
+            border-radius:5px;
+        }
