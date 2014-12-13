@@ -19,11 +19,12 @@
 }
 
 #login-box {
-    width: 300px;
-    padding: 20px;
+    width: 400px;
+    padding: 10px;
     margin: 100px auto;
-    background: #fff;
+
     -webkit-border-radius: 2px;
     -moz-border-radius: 2px;
     border: 1px solid #000;
+    border-radius: 10px;
 }

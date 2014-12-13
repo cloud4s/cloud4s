@@ -14,16 +14,17 @@
     <link href='<c:url value="/css/login.css" />' rel="stylesheet" type="text/css"/>
     <link href='<c:url value="/css/bootstrap.css" />' rel="stylesheet" type="text/css"/>
     <link href='<c:url value="/css/main.css" />' rel="stylesheet" type="text/css"/>
+    <link href='<c:url value="/css/landing-page.css" />' rel="stylesheet" type="text/css"/>
 
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/sb-admin.css" rel="stylesheet">
-    <link href="css/plugins/morris.css" rel="stylesheet">
+    <link href="css/bootstrap.css" rel="stylesheet">
+
     <link href="fonts/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
 </head>
 <body onload='document.loginForm.username.focus();'>
-
+<jsp:include page="header.jsp" />
 <%--<h1>Spring Security Login Form (Database Authentication)</h1>--%>
+<div class="intro-header">
 
 <div id="login-box" class="container">
 
@@ -39,13 +40,24 @@
     <form class="form-signin" name='loginForm' action="<c:url value='/j_spring_security_check' />" method='POST'>
 
         <table>
+            <%--<tr style="border-bottom: 1px solid #000000">--%>
             <tr>
-                <td>UserName:</td>
-                <td><input type='text' name='username' class="form-control" placeholder="Email" required="" autofocus=""></td>
+                <td><b>User Name</b></td>
+                <td>
+                    <div class="input-group">
+                        <span class="input-group-addon glyphicon-user"></span>
+                        <input type='text' name='username' class="form-control" placeholder="Email" required="" autofocus="">
+                    </div>
+                </td>
             </tr>
             <tr>
-                <td>Password:</td>
-                <td><input type='password' name='password' class="form-control" placeholder="Password" required="" /></td>
+                <td><b>Password</b></td>
+                <td>
+                    <div class="input-group">
+                        <span class="input-group-addon glyphicon-lock"></span>
+                        <input type='password' name='password' class="form-control" placeholder="Password" required="" />
+                    </div>
+                </td>
             </tr>
             <tr>
                 <td>
@@ -66,5 +78,6 @@
     </form>
 </div>
 
+</div>
 </body>
 </html>

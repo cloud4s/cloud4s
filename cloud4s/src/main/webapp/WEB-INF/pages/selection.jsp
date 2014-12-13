@@ -17,11 +17,8 @@
 
     <link href='<c:url value="/css/main.css" />' rel="stylesheet" type="text/css"/>
     <link href='<c:url value="/css/bootstrap.min.css" />' rel="stylesheet" type="text/css"/>
-    <link href='<c:url value="/css/sb-admin.css" />' rel="stylesheet" type="text/css"/>
-    <link href='<c:url value="/css/plugins/morris.css" />' rel="stylesheet" type="text/css"/>
+    <link href='<c:url value="/css/landing-page.css" />' rel="stylesheet" type="text/css"/>
     <link href='<c:url value="/fonts/css/font-awesome.min.css" />' rel="stylesheet" type="text/css"/>
-
-    <script src='<c:url value="/js/dropdown.js" />' type="text/javascript"></script>
 
     <%--logout --%>
     <sec:authorize access="hasRole('ROLE_USER')">
@@ -42,43 +39,46 @@
 
 <body>
 
-    <div id="wrapper">
+<jsp:include page="header.jsp" />
 
-        <div class="full-width">
+<div class="intro-header">
+
+    <div class="container">
             <!-- User dropdown - top menu -->
-            <c:if test="${pageContext.request.userPrincipal.name != null}">
-                <ul class="nav navbar-right top-nav">
-                    <li class="dropdown">
-                        <a href="#" onclick="collapseDropDown()" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i>
-                                ${pageContext.request.userPrincipal.name}
-                            <b class="caret"></b></a>
-                        <ul id="dropDownMenu"  hidden="true">
-                            <li>
-                                <a href="#"><i class="fa fa-fw fa-user"></i> Profile</a>
-                            </li>
-                            <li>
-                                <a href="#"><i class="fa fa-fw fa-envelope"></i> Inbox</a>
-                            </li>
-                            <li>
-                                <a href="#"><i class="fa fa-fw fa-gear"></i> Settings</a>
-                            </li>
-                            <li class="divider"></li>
-                            <li>
-                                <a href="javascript:formSubmit()"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </c:if>
+            <%--<c:if test="${pageContext.request.userPrincipal.name != null}">--%>
+                <%--<ul class="nav navbar-right top-nav">--%>
+                    <%--<li class="dropdown">--%>
+                        <%--<a href="#" onclick="collapseDropDown()" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i>--%>
+                                <%--${pageContext.request.userPrincipal.name}--%>
+                            <%--<b class="caret"></b></a>--%>
+                        <%--<ul id="dropDownMenu"  hidden="true">--%>
+                            <%--<li>--%>
+                                <%--<a href="#"><i class="fa fa-fw fa-user"></i> Profile</a>--%>
+                            <%--</li>--%>
+                            <%--<li>--%>
+                                <%--<a href="#"><i class="fa fa-fw fa-envelope"></i> Inbox</a>--%>
+                            <%--</li>--%>
+                            <%--<li>--%>
+                                <%--<a href="#"><i class="fa fa-fw fa-gear"></i> Settings</a>--%>
+                            <%--</li>--%>
+                            <%--<li class="divider"></li>--%>
+                            <%--<li>--%>
+                                <%--<a href="javascript:formSubmit()"><i class="fa fa-fw fa-power-off"></i> Log Out</a>--%>
+                            <%--</li>--%>
+                        <%--</ul>--%>
+                    <%--</li>--%>
+                <%--</ul>--%>
+            <%--</c:if>--%>
+
+
+        <div class="row">
+            <%--images.................--%>
+            <a href="/dropbox"><img class="img-thumbnail img-adjust" src="/img/dropbox.png" alt="Drop Box"></a>
+            <a href=""><img class="img-thumbnail img-adjust" src="/img/drive.png"  alt="Drive"></a>
+            <a href=""><img class="img-thumbnail img-adjust" src="/img/skydrive.png" alt="Sky Drive"></a>
+            <a href=""><img class="img-thumbnail img-adjust"src="/img/amazone.png" alt="Drop Box advanced"></a>
         </div>
-
-
-        <%--images.................--%>
-        <a href="/dropbox"><img class="img-thumbnail img-adjust" src="/images/dropbox.png" alt="Drop Box"></a>
-        <a href=""><img class="img-thumbnail img-adjust" src="/images/drive.png"  alt="Drive"></a>
-        <a href=""><img class="img-thumbnail img-adjust" src="/images/skydrive.png" alt="Sky Drive"></a>
-        <a href=""><img class="img-thumbnail img-adjust"src="/images/amazone.png" alt="Drop Box advanced"></a>
-
+    </div>
     </div>
 
 
