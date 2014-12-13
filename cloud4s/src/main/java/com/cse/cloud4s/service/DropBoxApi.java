@@ -19,5 +19,5 @@ public interface DropBoxApi {
 
     public void downloadfile(DbxClient client,String filename,String dest_path) throws DbxException,IOException;
 
-    public void loadfiles(DbxClient client) throws DbxException;
+    public DbxEntry.WithChildren loadfiles(DbxClient client) throws DbxException;
 }

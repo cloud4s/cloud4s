@@ -3,9 +3,12 @@ package com.cse.cloud4s.model;
 /**
  * Created by hp on 12/3/2014.
  */
+import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+@Entity
+@Table(name = "users" , catalog = "cloud4s")
 public class User {
 
     private String username;
@@ -29,6 +32,8 @@ public class User {
         this.userRole = userRole;
     }
 
+    @Id
+    @Column(name = "username" , unique = true, nullable = false,length = 45)
     public String getUsername() {
         return this.username;
     }
@@ -36,7 +41,7 @@ public class User {
     public void setUsername(String username) {
         this.username = username;
     }
-
+    @Column(name = "password", nullable = false, length = 60)
     public String getPassword() {
         return this.password;
     }
@@ -53,6 +58,7 @@ public class User {
         this.enabled = enabled;
     }
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     public Set<UserRole> getUserRole() {
         return this.userRole;
     }

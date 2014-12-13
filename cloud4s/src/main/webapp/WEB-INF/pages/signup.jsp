@@ -1,69 +1,52 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: hp
-  Date: 12/3/2014
-  Time: 10:51 PM
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!DOCTYPE html>
-<%@ page contentType="text/html;charset=UTF-8" language="java"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
-<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
-<%@ page session="false"%>
-<html>
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
-    <title><spring:message code="label.form.title"></spring:message></title>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+
+<html lang="en"><head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Sign up for cloud4s">
+    <meta name="author" content="Sameera">
+    <link rel="icon" href="http://getbootstrap.com/favicon.ico">
+
+    <title>SignUp - Cloud4s</title>
+
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="css/main.css" rel="stylesheet">
+
 </head>
+
 <body>
-<H1>
-    <spring:message code="label.form.title"></spring:message>
-</H1>
-<form:form modelAttribute="user" method="POST" enctype="utf8">
-    <br>
-    <tr>
-        <td><label><spring:message code="label.user.firstName"></spring:message>
-        </label>
-        </td>
-        <td><form:input path="firstName" value="" /></td>
-        <form:errors path="firstName" element="div"/>
-    </tr>
-    <tr>
-        <td><label><spring:message code="label.user.lastName"></spring:message>
-        </label>
-        </td>
-        <td><form:input path="lastName" value="" /></td>
-        <form:errors path="lastName" element="div" />
-    </tr>
-    <tr>
-        <td><label><spring:message code="label.user.email"></spring:message>
-        </label>
-        </td>
-        <td><form:input path="email" value="" /></td>
-        <form:errors path="email" element="div" />
-    </tr>
-    <tr>
-        <td><label><spring:message code="label.user.password"></spring:message>
-        </label>
-        </td>
-        <td><form:input path="password" value="" type="password" /></td>
-        <form:errors path="password" element="div" />
-    </tr>
-    <tr>
-        <td><label><spring:message code="label.user.confirmPass"></spring:message>
-        </label>
-        </td>
-        <td><form:input path="matchingPassword" value="" type="password" /></td>
-        <form:errors element="div" />
-    </tr>
-    <button type="submit"><spring:message code="label.form.submit"></spring:message>
-    </button>
-</form:form>
-<br>
-<a href="<c:url value="login.html" />">
-    <spring:message code="label.form.loginLink"></spring:message>
-</a>
-</body>
-</html>
+
+<div class="container">
+
+
+    <form class="form-signin" method="get" action="<c:url value='/saveuser' />" >
+
+        <label for="inputEmail" >Name</label>
+        <input id="inputName" class="form-control" name="inputName" placeholder="Name" required="" autofocus="" type="text">
+        <label for="inputEmail" >Email</label>
+        <input id="inputEmail" class="form-control" name="inputEmail"placeholder="Email" required="" autofocus="" type="email">
+        <label for="inputPassword" >Password</label>
+        <input id="inputPassword" class="form-control" name="inputPassword" placeholder="Password" required="" type="password">
+        <label for="inputPassword2" >Retype Password</label>
+        <input id="inputPassword2" class="form-control" placeholder="Re-Password" required="" type="password">
+        <label for="inputKey" >Encryption Key</label>
+        <div>
+            <input id="inputKey" class="form-control col-lg-8" name="inputKey" placeholder="Encryption Key" required="" type="password">
+            <label id="inputKeyDescription" class="info-label" title="why encryption key"> ?</label>
+        </div>
+        </br>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
+        <%--<input name="submit" type="submit"--%>
+               <%--value="submit" class="btn btn-lg btn-primary btn-block" />--%>
+
+    </form>
+
+</div> <!-- /container -->
+<script>
+
+</script>
+</body></html>

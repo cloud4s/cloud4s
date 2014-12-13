@@ -5,8 +5,11 @@ package com.cse.cloud4s.controller;
  */
 import com.cse.cloud4s.dao.UserDaoImpl;
 import com.cse.cloud4s.service.DropBoxApi;
+import com.cse.cloud4s.service.JsonResponse;
 import com.cse.cloud4s.service.addUser;
 import com.dropbox.core.DbxException;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -24,6 +27,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.jar.JarException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +45,10 @@ public class MainController {
     @Qualifier("DropBox")
     @Autowired
     private DropBoxApi dropboxapi;
+
+    @Qualifier("JsonResponse")
+    @Autowired
+    public JsonResponse jasonresponse;
 
     public UserDao userdao;
 
@@ -96,7 +104,7 @@ public class MainController {
             try {
                 client=dropboxapi.verify(code);
 //                dropboxapi.uploadFile(client,"C:/Users/hp/Downloads/dashboard.jsp","/dashboard.jsp");
-                dropboxapi.loadfiles(client);
+//                dropboxapi.loadfiles(client);
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (DbxException e) {
@@ -110,6 +118,7 @@ public class MainController {
 
     }
 
+
     @RequestMapping(value = { "/upload" }, method = RequestMethod.GET)
     public ModelAndView uploadPage(@ModelAttribute("fileName")String filename,
                                    BindingResult result) {
@@ -121,7 +130,7 @@ public class MainController {
 
 
         try {
-            Thread.sleep(5000);
+            Thread.sleep(5000);// have to remove wih proper mechanism
             dropboxapi.uploadFile(client,LocalPath,DropboxPath);
         } catch (IOException e) {
             e.printStackTrace();
@@ -159,14 +168,56 @@ public class MainController {
 //
 //
 //    }
-    @RequestMapping(value = { "/dashboard**" }, method = RequestMethod.GET)
-    public ModelAndView dashboard() {
+    @RequestMapping(value = { "/loadfiles**" }, method = RequestMethod.GET)
+    @ResponseBody
+//    public DbxEntry.WithChildren loadFiles() {
+//    public JsonResponse loadFiles() {
+    public String loadFiles() throws JarException{
 
-    ModelAndView model = new ModelAndView();
+
+        String note;
+        DbxEntry.WithChildren list;
+
+        JSONObject[] fileList;
+        int i=0;
+        JSONArray listArray = new JSONArray();
+        JSONObject results= new JSONObject();
+
+        try {
+            list= dropboxapi.loadfiles(client);
+            fileList=new JSONObject[list.children.size()];
+
+//            String[] details ={list.children.get(0).name, list.children.get(0).iconName, list.children.get(0).path};
+//            one.put("filename",list.children.get(0).name);
+//            one.put("iconname",list.children.get(0).iconName);
+//            one.put("path",list.children.get(0).path);
+//            one.put("filename", details);
+
+            for (DbxEntry child : list.children) {
+//                    jasonresponse.addRow(new JsonResponse.Cell(child.name), new JsonResponse.Cell(child.iconName), new JsonResponse.Cell(child.path));
+                      fileList[i]=new JSONObject();
+                      fileList[i].put("filename",child.name);
+                      fileList[i].put("iconname",child.iconName);
+                      fileList[i].put("path",child.path);
+                      listArray.add(fileList[i]);
+                        i++;
+            }
 
 
-    model.setViewName("dashboard");
-    return model;
+            results.put("files",listArray);
+
+
+
+
+        } catch (DbxException e) {
+            e.printStackTrace();
+//            jasonresponse.addRow(new JsonResponse.Cell(" error "), new JsonResponse.Cell(" error"), new JsonResponse.Cell(" error "));
+            results.put("files","error");
+        }
+
+        System.out.println( results.toString() );
+
+    return results.toString();
 
 }
     @RequestMapping(value = { "/signup**" }, method = RequestMethod.GET)

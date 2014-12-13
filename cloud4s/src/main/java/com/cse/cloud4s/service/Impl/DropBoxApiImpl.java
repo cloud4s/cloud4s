@@ -92,12 +92,14 @@ public class DropBoxApiImpl implements DropBoxApi {
 
     }
 
-    public void loadfiles(DbxClient client) throws DbxException { //loading details of files.  only printing name and icon name.there are other attributes also.eg: child.attr
+    public DbxEntry.WithChildren loadfiles(DbxClient client) throws DbxException { //loading details of files.  only printing name and icon name.there are other attributes also.eg: child.attr
         DbxEntry.WithChildren listing = client.getMetadataWithChildren("/");
         System.out.println("Files in the root path:");
         for (DbxEntry child : listing.children) {
-            System.out.println("    " + child.name + ": " + child.iconName+":");
+            System.out.println("    " + child.name + ": " + child.iconName+":"+child.path);
         }
+
+        return listing;
     }
 
 

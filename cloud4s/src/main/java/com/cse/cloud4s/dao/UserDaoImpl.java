@@ -12,11 +12,13 @@ import org.hibernate.Transaction;
 
 import com.cse.cloud4s.model.User;
 import com.cse.cloud4s.model.UserRole;
+import org.springframework.beans.factory.annotation.Autowired;
 
 //import javax.transaction.Transaction;
 
 public class UserDaoImpl implements UserDao {
 
+    @Autowired
     private SessionFactory sessionFactory;
 
     @SuppressWarnings("unchecked")
