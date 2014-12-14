@@ -38,9 +38,9 @@
 </head>
 
 <body>
-
+<%--Header--%>
 <jsp:include page="header.jsp" />
-
+<%--Content--%>
 <div class="intro-header">
 
     <div class="container">
@@ -80,8 +80,8 @@
         </div>
     </div>
     </div>
-
-
+<%--Footer--%>
+<jsp:include page="footer.jsp" />
 
 </body>
 

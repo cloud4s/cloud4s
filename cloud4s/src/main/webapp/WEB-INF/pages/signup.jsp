@@ -20,8 +20,12 @@
 
 <body>
 
-<div class="container">
+<%--Header--%>
+<jsp:include page="header.jsp" />
 
+<%--Content--%>
+<div class="intro-header">
+<div class="container login-box">
 
     <form class="form-signin" method="get" action="<c:url value='/saveuser' />" >
 
@@ -46,7 +50,10 @@
     </form>
 
 </div> <!-- /container -->
-<script>
+</div>
 
-</script>
-</body></html>
+<%--Footer--%>
+<jsp:include page="footer.jsp" />
+
+</body>
+</html>

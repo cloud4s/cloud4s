@@ -3,13 +3,16 @@ package com.cse.cloud4s.controller;
 /**
  * Created by hp on 12/3/2014.
  */
-import com.cse.cloud4s.dao.UserDaoImpl;
+import com.cse.cloud4s.dao.UserDao;
 import com.cse.cloud4s.service.DropBoxApi;
 import com.cse.cloud4s.service.JsonResponse;
-import com.cse.cloud4s.service.addUser;
+import com.dropbox.core.DbxClient;
+import com.dropbox.core.DbxEntry;
 import com.dropbox.core.DbxException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -17,25 +20,12 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import com.cse.cloud4s.dao.UserDao;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.util.Date;
-import java.util.Locale;
 import java.util.jar.JarException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-
-import com.dropbox.core.*;
 
 @Controller
 public class MainController {
@@ -58,8 +48,6 @@ public class MainController {
     public ModelAndView defaultPage() {
 
         ModelAndView model = new ModelAndView();
-        model.addObject("title", "Spring Security Login Form - Database Authentication");
-        model.addObject("message", "This is default page!");
         model.setViewName("hello");
         return model;
 
@@ -276,7 +264,7 @@ public class MainController {
             model.addObject("username", userDetail.getUsername());
 
         }
-
+        model.addObject("message", "You do not have permission to access this page!");
         model.setViewName("403");
         return model;
 

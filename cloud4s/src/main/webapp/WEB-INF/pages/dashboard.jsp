@@ -16,14 +16,12 @@
     <title>DashBoard - Cloud4s</title>
 
     <link href='<c:url value="/css/main.css" />' rel="stylesheet" type="text/css"/>
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/sb-admin.css" rel="stylesheet">
-    <link href="css/plugins/morris.css" rel="stylesheet">
-    <link href="fonts/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href='<c:url value="/css/dashboard.css" />' rel="stylesheet" type="text/css"/>
+    <link href='<c:url value="/css/bootstrap.min.css" />' rel="stylesheet" type="text/css"/>
+    <link href='<c:url value="/fonts/css/font-awesome.min.css" />' rel="stylesheet" type="text/css"/>
 
-    <script src='<c:url value="/js/dropdown.js" />' type="text/javascript"></script>
     <script src='<c:url value="/js/jquery-2.0.0.js" />' type="text/javascript"></script>
-    <script src='<c:url value="/js/bootstrap-filestyle-0.1.0.js" />' type="text/javascript"></script>
+    <script src="js/main.js"></script>
 
     <!--AES sripts-->
     <script src="js/aes/jquery.js"></script>
@@ -45,8 +43,6 @@
     <script src="js/rsa/random.js"></script>
     <script src="js/rsa/jsencrypt.js"></script>
 
-    <script src="js/main.js"></script>
-
     <sec:authorize access="hasRole('ROLE_USER')">
         <!-- For login user -->
         <c:url value="/j_spring_security_logout" var="logoutUrl" />
@@ -67,7 +63,6 @@
         </script>
 
     </sec:authorize>
-
 
     <script type="text/javascript">
         function harshikaAjax() {
@@ -113,54 +108,23 @@
 </head>
 
 <body onload="harshikaAjax()">
+<%--Header--%>
+<jsp:include page="header.jsp" />
+<%--Body Content--%>
+<div class="intro-header">
 
-<div id="wrapper">
+    <div class="container">
+        <%--<a href="javascript:formSubmit()"><i class="fa fa-fw fa-power-off"></i> Log Out</a>--%>
 
-    <!-- Navigation -->
-    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-        </div>
-
-        <!-- User dropdown - top menu -->
-    <c:if test="${pageContext.request.userPrincipal.name != null}">
-        <ul class="nav navbar-right top-nav">
-            <li class="dropdown">
-                <a href="#" onclick="collapseDropDown()"><i class="fa fa-user"></i>
-                 ${pageContext.request.userPrincipal.name}
-                 <b class="caret"></b></a>
-                <ul id="dropDownMenu"  hidden="true">
-                    <li>
-                        <a href="#"><i class="fa fa-fw fa-user"></i> Profile</a>
-                    </li>
-                    <li>
-                        <a href="#"><i class="fa fa-fw fa-envelope"></i> Inbox</a>
-                    </li>
-                    <li>
-                        <a href="#"><i class="fa fa-fw fa-gear"></i> Settings</a>
-                    </li>
-                    <li class="divider"></li>
-                    <li>
-                        <a href="javascript:formSubmit()"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-    </c:if>
         <!-- Sidebar Menu Items  -->
         <div class="collapse navbar-collapse navbar-ex1-collapse">
             <ul class="nav navbar-nav side-nav">
                 <li>
                     <input name="password-file" id="password-encrpt" value="1234" type="text" hidden="hidden">
-
-                    <input name="src-file" id="src-file" onchange="encryptFile(this.files[0])" type="file" value="Upload" class="btn btn-lg btn-primary">
-                        <%--<input id="uploadButton" value="Upload" class="btn btn-lg btn-primary" width="150px"/>--%>
+                        <span class="btn btn-default btn-file">
+                            Upload
+                            <input name="src-file" id="src-file" onchange="encryptFile(this.files[0])" type="file">
+                        </span>
 
                 </li>
                 <li class="active">
@@ -189,82 +153,6 @@
                     </ol>
                 </div>
             </div>
-
-            <!--File Manager-->
-            <div class="row">
-                <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-primary">
-                        <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-xs-3">
-                                    <i class="fa fa-comments fa-5x"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <a href="#">
-                            <div class="panel-footer">
-                                <span class="pull-left">Folder 1</span>
-                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                <div class="clearfix"></div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-green">
-                        <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-xs-3">
-                                    <i class="fa fa-tasks fa-5x"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <a href="#">
-                            <div class="panel-footer">
-                                <span class="pull-left">Folder 2</span>
-                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                <div class="clearfix"></div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-yellow">
-                        <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-xs-3">
-                                    <i class="fa fa-shopping-cart fa-5x"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <a href="#">
-                            <div class="panel-footer">
-                                <span class="pull-left">Folder 3</span>
-                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                <div class="clearfix"></div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-                <div class="col-lg-3 col-md-6">
-                    <div class="panel panel-red">
-                        <div class="panel-heading">
-                            <div class="row">
-                                <div class="col-xs-3">
-                                    <i class="fa fa-support fa-5x"></i>
-                                </div>
-                            </div>
-                        </div>
-                        <a href="#">
-                            <div class="panel-footer">
-                                <span class="pull-left">Folder 4</span>
-                                <span class="pull-right"><i class="fa fa-arrow-circle-right"></i></span>
-                                <div class="clearfix"></div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
     <%--list display--%>
@@ -273,12 +161,15 @@
             <td>Name</td>
             <td>Icon</td>
             <td>Path</td>
-
         </tr>
-
     </table>
     <%----%>
 </div>
+
+</div>
+<%--Footer--%>
+<jsp:include page="footer.jsp" />
+
 </body>
 
 </html>

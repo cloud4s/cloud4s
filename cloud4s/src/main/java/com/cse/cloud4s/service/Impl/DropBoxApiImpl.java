@@ -1,12 +1,14 @@
 package com.cse.cloud4s.service.Impl;
 
 import com.cse.cloud4s.service.DropBoxApi;
+import com.dropbox.core.*;
 import org.springframework.stereotype.Service;
 
-import com.dropbox.core.*;
-import java.io.*;
-import java.util.Locale;
 import java.awt.*;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Locale;
 
 /**
  * Created by hp on 12/5/2014.
@@ -17,6 +19,7 @@ public class DropBoxApiImpl implements DropBoxApi {
     static String url;
     static DbxRequestConfig config;
     static DbxWebAuthNoRedirect webAuth;
+    private final String USER_AGENT = "Mozilla/34.0.5";
 
 //    public DbxWebAuthNoRedirect connect() throws IOException,DbxException {         //connect to dropbox .returns object of DbxClient.APP_KEY and APP_SECRET should be developers one.
     public void connect() throws IOException,DbxException {         //connect to dropbox .returns object of DbxClient.APP_KEY and APP_SECRET should be developers one.
@@ -36,6 +39,12 @@ public class DropBoxApiImpl implements DropBoxApi {
         System.out.println("1. Go to: " + authorizeUrl);
         System.out.println("2. Click \"Allow\" (you might have to log in first)");
         System.out.println("3. Copy the authorization code.");
+
+        try {
+            getToken(authorizeUrl);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         Desktop.getDesktop().browse(java.net.URI.create(authorizeUrl));
 
 //            String code = this.getCode(authorizeUrl);
@@ -102,6 +111,33 @@ public class DropBoxApiImpl implements DropBoxApi {
         return listing;
     }
 
+    private void getToken(String url) throws Exception {
 
+
+        URL obj = new URL(url);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+
+        // optional default is GET
+        con.setRequestMethod("GET");
+
+        //add request header
+        con.setRequestProperty("User-Agent", USER_AGENT);
+
+        int responseCode = con.getResponseCode();
+
+        BufferedReader in = new BufferedReader(
+                new InputStreamReader(con.getInputStream()));
+        String inputLine;
+        StringBuffer response = new StringBuffer();
+
+        while ((inputLine = in.readLine()) != null) {
+            response.append(inputLine);
+        }
+        in.close();
+
+        //print result
+        System.out.println("token "+response);
+
+    }
 
 }

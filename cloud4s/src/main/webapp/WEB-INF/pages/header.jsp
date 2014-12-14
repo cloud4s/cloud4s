@@ -12,7 +12,7 @@
 </head>
 <body>
 <!-- Navigation -->
-<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+<nav class="navbar navbar-default navbar-fixed-top navbar-custom" role="navigation">
     <div class="container">
         <!-- Brand and toggle get grouped for better mobile display -->
         <div class="navbar-header">
@@ -22,18 +22,25 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">Welcome</a>
+            <a class="navbar-brand" href="/#">Welcome</a>
         </div>
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
 
-                <li>
-                    <a href="#secA">Services</a>
+                <li id="serviceTab">
+                    <a href="/#secA">Services</a>
                 </li>
-                <li>
-                    <a href="#secB">Contact</a>
+                <li id="contactTab">
+                    <a href="/#secB">Contact</a>
                 </li>
+               <li style="display:${pageContext.request.userPrincipal.name == null ? 'none' : 'block'}; margin-top: 15px">
+                    ${pageContext.request.userPrincipal.name}
+               </li>
+                <li style="display:${pageContext.request.userPrincipal.name == null ? 'none' : 'block'}">
+                    <a href="javascript:formSubmit()">Logout</a>
+                </li>
+
             </ul>
         </div>
         <!-- /.navbar-collapse -->

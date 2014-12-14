@@ -61,3 +61,37 @@ body {
     border-color: transparent !important;
     background-color: transparent !important;
 }
+.navbar-custom{
+    background-color: rgba(38, 31, 146, 0.88) !important;
+    border-color: #000000 !important;
+}
+
+.page403{
+    min-height: 80vh;
+    padding-top: 50px; /* If you're making other pages, make sure there is 50px of padding to make sure the navbar doesn't overlap content! */
+    padding-bottom: 50px;
+    text-align: center;
+    color: #f8f8f8;
+    background: url(/img/403.jpg) no-repeat center center;
+    background-size: cover;
+    }
+.intro-header {
+    min-height: 80vh;
+    padding-top: 50px; /* If you're making other pages, make sure there is 50px of padding to make sure the navbar doesn't overlap content! */
+    padding-bottom: 50px;
+    text-align: center;
+    color: #D71567;
+    background: url(/img/intro-bg.jpg) no-repeat center center;
+    background-size: cover;
+}
+
+.login-box {
+    width: 400px !important;
+    padding: 10px;
+    margin: 100px auto;
+
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    border: 1px solid #000;
+    border-radius: 10px;
+}

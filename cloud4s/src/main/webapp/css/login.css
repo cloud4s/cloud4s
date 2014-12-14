@@ -18,7 +18,7 @@
     border-color: #bce8f1;
 }
 
-#login-box {
+.login-box {
     width: 400px;
     padding: 10px;
     margin: 100px auto;

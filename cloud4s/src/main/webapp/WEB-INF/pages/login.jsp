@@ -9,6 +9,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@page session="true"%>
 <html>
+
 <head>
     <title>SignIn - Cloud4s</title>
     <link href='<c:url value="/css/login.css" />' rel="stylesheet" type="text/css"/>
@@ -21,12 +22,15 @@
     <link href="fonts/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
 </head>
+
 <body onload='document.loginForm.username.focus();'>
+<%--Header--%>
 <jsp:include page="header.jsp" />
-<%--<h1>Spring Security Login Form (Database Authentication)</h1>--%>
+
+<%--Body Content--%>
 <div class="intro-header">
 
-<div id="login-box" class="container">
+<div id="login-box" class="container login-box">
 
     <h4>Cloud4S Logging</h4>
 
@@ -45,7 +49,7 @@
                 <td><b>User Name</b></td>
                 <td>
                     <div class="input-group">
-                        <span class="input-group-addon glyphicon-user"></span>
+                        <span class="input-group-addon"><i class="fa fa-fw fa-user"></i></span>
                         <input type='text' name='username' class="form-control" placeholder="Email" required="" autofocus="">
                     </div>
                 </td>
@@ -54,7 +58,7 @@
                 <td><b>Password</b></td>
                 <td>
                     <div class="input-group">
-                        <span class="input-group-addon glyphicon-lock"></span>
+                        <span class="input-group-addon"><i class="fa fa-fw fa-lock"></i></span>
                         <input type='password' name='password' class="form-control" placeholder="Password" required="" />
                     </div>
                 </td>
@@ -79,5 +83,10 @@
 </div>
 
 </div>
+
+<%--Footer--%>
+<jsp:include page="footer.jsp" />
+
 </body>
+
 </html>

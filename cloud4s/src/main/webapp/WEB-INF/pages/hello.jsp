@@ -1,5 +1,14 @@
-﻿<!DOCTYPE html>
-<!-- saved from url=(0014)about:internet -->
+﻿<%--
+  Created by IntelliJ IDEA.
+  User: hp
+  Date: 12/3/2014
+  Time: 5:39 PM
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@page session="true"%>
+
 <html lang="en">
 
 <head>
@@ -10,30 +19,17 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Landing Page - Start Bootstrap Theme</title>
+    <title>Welcome - Cloud4s</title>
 
-    <!-- Bootstrap Core CSS -->
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom CSS -->
     <link href="css/landing-page.css" rel="stylesheet">
-
-    <!-- Custom Fonts -->
+    <link href="css/main.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="fonts/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="http://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
 
-    <%--<script src="js/main.js"></script>--%>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
-</head>
-
-<body>
     <%--Logout form--%>
     <sec:authorize access="hasRole('ROLE_USER')">
         <!-- For login user -->
@@ -48,19 +44,14 @@
             }
         </script>
 
-        <c:if test="${pageContext.request.userPrincipal.name != null}">
-            <p>
-                User : ${pageContext.request.userPrincipal.name} | <a
-                    href="javascript:formSubmit()"> Logout</a>
-            </p>
-        </c:if>
-
     </sec:authorize>
 
+</head>
+
+<body>
+    <!-- Header -->
     <jsp:include page="header.jsp" />
 
-
-    <!-- Header -->
     <div class="intro-header">
 
         <div class="container">
@@ -88,9 +79,6 @@
         <!-- /.container -->
 
     </div>
-    <!-- /.intro-header -->
-
-    <!-- Page Content -->
 
     <div class="content-section-a" id="secA">
 
@@ -112,7 +100,6 @@
         <!-- /.container -->
 
     </div>
-    <!-- /.content-section-a -->
 
     <div class="content-section-b">
 
@@ -134,7 +121,6 @@
         <!-- /.container -->
 
     </div>
-    <!-- /.content-section-b -->
 
     <div class="content-section-a" id="secB">
 
@@ -156,7 +142,6 @@
         <!-- /.container -->
 
     </div>
-    <!-- /.content-section-a -->
 
     <div class="banner">
 
@@ -164,18 +149,18 @@
 
             <div class="row">
                 <div class="col-lg-6">
-                    <h2>Connect to Start Bootstrap:</h2>
+                    <h2>Connect to Cloud4s Social</h2>
                 </div>
                 <div class="col-lg-6">
                     <ul class="list-inline banner-social-buttons">
                         <li>
-                            <a href="https://twitter.com/SBootstrap" class="btn btn-default btn-lg"><i class="fa fa-twitter fa-fw"></i> <span class="network-name">Twitter</span></a>
+                            <a href="https://twitter.com/cloud4ss" class="btn btn-default btn-lg"><i class="fa fa-twitter fa-fw"></i> <span class="network-name">Twitter</span></a>
                         </li>
                         <li>
-                            <a href="https://github.com/IronSummitMedia/startbootstrap" class="btn btn-default btn-lg"><i class="fa fa-github fa-fw"></i> <span class="network-name">Github</span></a>
+                            <a href="https://github.com/cloud4s/cloud4s" class="btn btn-default btn-lg"><i class="fa fa-github fa-fw"></i> <span class="network-name">Github</span></a>
                         </li>
                         <li>
-                            <a href="#" class="btn btn-default btn-lg"><i class="fa fa-linkedin fa-fw"></i> <span class="network-name">Linkedin</span></a>
+                            <a href="https://www.facebook.com/cloud4s.1" class="btn btn-default btn-lg"><i class="fa fa-facebook fa-fw"></i> <span class="network-name">FaceBook</span></a>
                         </li>
                     </ul>
                 </div>
@@ -185,41 +170,9 @@
         <!-- /.container -->
 
     </div>
-    <!-- /.banner -->
 
-    <!-- Footer -->
-    <footer>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <ul class="list-inline">
-                        <li>
-                            <a href="#home">Home</a>
-                        </li>
-                        <li class="footer-menu-divider">&sdot;</li>
-                        <li>
-                            <a href="#about">About</a>
-                        </li>
-                        <li class="footer-menu-divider">&sdot;</li>
-                        <li>
-                            <a href="#services">Services</a>
-                        </li>
-                        <li class="footer-menu-divider">&sdot;</li>
-                        <li>
-                            <a href="#contact">Contact</a>
-                        </li>
-                    </ul>
-                    <p class="copyright text-muted small">Copyright &copy; Your Company 2014. All Rights Reserved</p>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- jQuery -->
-    <script src="js/jquery-2.0.0.js"></script>
-
-    <!-- Bootstrap Core JavaScript -->
-    <script src="js/bootstrap.min.js"></script>
+    <%--Footer--%>
+    <jsp:include page="footer.jsp" />
 
 </body>
 
