@@ -78,7 +78,9 @@
                     var tableData ="<tr><th>"+ "Name" +"</th><th>"+ "Icon" +"</th><th>"+ "Path" +"</th></tr>";
                     for(var i=0; i < jsonLoadFiles.length; i++){
                         var obj = jsonLoadFiles[i];
-                        tableData += "<tr><td>"+obj["filename"]+"</td><td>"+obj["iconname"]+"</td><td>"+obj["path"]+"</td></tr>";
+                        tableData += "<tr>";
+                        tableData += "<td>"+obj["filename"]+"</td><td>"+obj["iconname"]+"</td><td>"+obj["path"]+"</td>";
+                        tableData += "</tr>";
                     }
                     $("table").html(tableData);
                 }
@@ -137,7 +139,7 @@
         </div>
     </div>
     <%--list display--%>
-    <table id="table" name="table" tableborder="1px" bordercolor="black" width=80% align="center">
+    <table id="table" name="table" tableborder="1px" bordercolor="black" width=80% align="center" class="table table-striped table-bordered">
         <%--<tr>--%>
             <%--<td>Name</td>--%>
             <%--<td>Icon</td>--%>
