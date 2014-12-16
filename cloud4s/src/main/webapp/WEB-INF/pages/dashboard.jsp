@@ -73,33 +73,19 @@
                 contentType : 'application/json; charset=utf-8',
                 type : 'GET',
                 success : function(data) {
-//                    $('#result').html(data);
-
-                    var jsonLoadFiles=data.files;
+                var jsonLoadFiles=data.files;
                     console.log(jsonLoadFiles);
-
+                    var tableData =" <thead><tr><th>"+ "#" +"</th><th>"+ "Name" +"</th><th>"+ "Icon" +"</th><th>"+ "Path" +"</th></tr></thead>";
+                    tableData += "<tbody>";
                     for(var i=0; i < jsonLoadFiles.length; i++){
                         var obj = jsonLoadFiles[i];
-                        var tr;
-                        for( var key in obj){
-                            tr = $('<tr/>');
-                            tr.append("<td>" +obj.key.toString() + "</td>");
-                        }
-//                        $('table').append(tr);
-                        $("table").html(tr);
+                        tableData += "<tr>";
+                        tableData += "<td>" +(i+1)+"</td>"
+                        tableData += "<td>"+obj["filename"]+"</td><td>"+obj["iconname"]+"</td><td>"+obj["path"]+"</td>";
+                        tableData += "</tr>";
                     }
-
-//                    for(var key in jsonLoadFiles){
-//                        tr.append("<td>" +jsonLoadFiles[key].toString + "</td>");
-//                    }
-//                    for (var i = 0; i < jsonLoadFiles.length; i++) {
-//                        tr = $('<tr/>');
-//                        tr.append("<td>" +jsonLoadFiles[i].Filename + "</td>");
-//                        tr.append("<td>" + jsonLoadFiles[i].IconName + "</td>");
-//                        tr.append("<td>" + jsonLoadFiles[i].LastModified + "</td>");
-//                        $('table').append(tr);
-//                    }
-//                    $('table').append(tr);
+                    tableData += "</tbody>";
+                    $("table").html(tableData);
                 }
             });
         }
@@ -156,13 +142,16 @@
         </div>
     </div>
     <%--list display--%>
-    <table id="table" name="table" tableborder="1px" bordercolor="black" width=80% align="center">
-        <tr>
-            <td>Name</td>
-            <td>Icon</td>
-            <td>Path</td>
-        </tr>
+    <div class="table-responsive">
+    <table id="table" name="table" tableborder="1px" bordercolor="black" width=80% align="center"
+           class="table table-hover table-striped table-bordered table-condensed">
+        <%--<tr>--%>
+            <%--<td>Name</td>--%>
+            <%--<td>Icon</td>--%>
+            <%--<td>Path</td>--%>
+        <%--</tr>--%>
     </table>
+    </div>
     <%----%>
 </div>
 

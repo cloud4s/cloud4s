@@ -22,7 +22,7 @@ public class addUserImpl implements addUser {
 
     @Override
     public  void addUser(com.cse.cloud4s.model.User user){
-            userDao.saveUser(user.getUsername(),user.getPassword());
+            userDao.saveUser(user.getUsername(),user.getPassword(), user.getEmail());
     }
 
 
