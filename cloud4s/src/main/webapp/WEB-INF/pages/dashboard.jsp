@@ -75,6 +75,7 @@
                 success : function(data) {
                 var jsonLoadFiles=data.files;
                     console.log(jsonLoadFiles);
+<<<<<<< HEAD
                     var tableData =" <thead><tr><th>"+ "#" +"</th><th>"+ "Name" +"</th><th>"+ "Icon" +"</th><th>"+ "Path" +"</th></tr></thead>";
                     tableData += "<tbody>";
                     for(var i=0; i < jsonLoadFiles.length; i++){
@@ -85,6 +86,15 @@
                         tableData += "</tr>";
                     }
                     tableData += "</tbody>";
+=======
+                    var tableData ="<tr><th>"+ "Name" +"</th><th>"+ "Icon" +"</th><th>"+ "Path" +"</th></tr>";
+                    for(var i=0; i < jsonLoadFiles.length; i++){
+                        var obj = jsonLoadFiles[i];
+                        tableData += "<tr>";
+                        tableData += "<td>"+obj["filename"]+"</td><td>"+obj["iconname"]+"</td><td>"+obj["path"]+"</td>";
+                        tableData += "</tr>";
+                    }
+>>>>>>> 5b1589743c36452952b857bcc068477f7a32a2fe
                     $("table").html(tableData);
                 }
             });
@@ -142,9 +152,13 @@
         </div>
     </div>
     <%--list display--%>
+<<<<<<< HEAD
     <div class="table-responsive">
     <table id="table" name="table" tableborder="1px" bordercolor="black" width=80% align="center"
            class="table table-hover table-striped table-bordered table-condensed">
+=======
+    <table id="table" name="table" tableborder="1px" bordercolor="black" width=80% align="center" class="table table-striped table-bordered">
+>>>>>>> 5b1589743c36452952b857bcc068477f7a32a2fe
         <%--<tr>--%>
             <%--<td>Name</td>--%>
             <%--<td>Icon</td>--%>

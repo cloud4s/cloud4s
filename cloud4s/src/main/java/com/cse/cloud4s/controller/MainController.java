@@ -112,7 +112,7 @@ public class MainController {
                                    BindingResult result) {
 
         ModelAndView model = new ModelAndView();
-        String LocalPath="C:/Users/hp/Downloads/"+filename;
+        String LocalPath="/home/hasitha/Downloads/"+filename;
         String DropboxPath="/"+filename;
 
 
@@ -190,13 +190,7 @@ public class MainController {
                       listArray.add(fileList[i]);
                         i++;
             }
-
-
             results.put("files",listArray);
-
-
-
-
         } catch (DbxException e) {
             e.printStackTrace();
 //            jasonresponse.addRow(new JsonResponse.Cell(" error "), new JsonResponse.Cell(" error"), new JsonResponse.Cell(" error "));
