@@ -11,15 +11,10 @@
 <html>
 
 <head>
+
     <title>SignIn - Cloud4s</title>
+
     <link href='<c:url value="/css/login.css" />' rel="stylesheet" type="text/css"/>
-    <link href='<c:url value="/css/bootstrap.css" />' rel="stylesheet" type="text/css"/>
-    <link href='<c:url value="/css/main.css" />' rel="stylesheet" type="text/css"/>
-    <link href='<c:url value="/css/landing-page.css" />' rel="stylesheet" type="text/css"/>
-
-    <link href="css/bootstrap.css" rel="stylesheet">
-
-    <link href="fonts/css/font-awesome.min.css" rel="stylesheet" type="text/css">
 
 </head>
 

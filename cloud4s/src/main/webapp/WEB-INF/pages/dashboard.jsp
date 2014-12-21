@@ -7,24 +7,11 @@
 
 <head>
 
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="DashBoard for Cloud4s">
-    <meta name="author" content="Sameera">
-
     <title>DashBoard - Cloud4s</title>
 
-    <link href='<c:url value="/css/main.css" />' rel="stylesheet" type="text/css"/>
     <link href='<c:url value="/css/dashboard.css" />' rel="stylesheet" type="text/css"/>
-    <link href='<c:url value="/css/bootstrap.css" />' rel="stylesheet" type="text/css"/>
-    <link href='<c:url value="/css/bootstrap-table.css" />' rel="stylesheet" type="text/css"/>
-    <link href='<c:url value="/fonts/css/font-awesome.min.css" />' rel="stylesheet" type="text/css"/>
 
-    <script src='<c:url value="/js/jquery-2.0.0.js" />' type="text/javascript"></script>
-    <script src='<c:url value="/js/bootstrap.js" />' type="text/javascript"></script>
-    <script src='<c:url value="/js/bootstrap-table.js" />' type="text/javascript"></script>
-    <script src='<c:url value="/js/main.js" />' type="text/javascript"></script>
+    <script src="js/dashboard.js"></script>
 
     <!--AES sripts-->
     <script src="js/aes/jquery.js"></script>
@@ -47,85 +34,11 @@
     <script src="js/rsa/jsencrypt.js"></script>
 
     <sec:authorize access="hasRole('ROLE_USER')">
-        <!-- For login user -->
-        <c:url value="/j_spring_security_logout" var="logoutUrl" />
-        <form action="${logoutUrl}" method="post" id="logoutForm">
-            <input type="hidden" name="${_csrf.parameterName}"
-                   value="${_csrf.token}" />
-        </form>
-
         <c:url value="/upload" var="uploadUrl" />
         <form action="${uploadUrl}" method="get" id="uploadForm">
             <input id="fileName" name="fileName" type="hidden" value=""/>
         </form>
-
-        <script>
-            function formSubmit() {
-                $('#logoutForm').submit();
-            }
-        </script>
-
     </sec:authorize>
-
-    <script type="text/javascript">
-        function harshikaAjax() {
-            $.ajax({
-                url : 'loadfiles.html',
-                dataType : "json",
-                cache : false ,
-                contentType : 'application/json; charset=utf-8',
-                type : 'GET',
-                success : function(data) {
-                var jsonLoadFiles=data.files;
-                    console.log(JSON.stringify(jsonLoadFiles))
-
-                    var result = [];
-                    for(var i in jsonLoadFiles)
-                        result.push([i, jsonLoadFiles [i]]);
-
-                    //creating table
-                    $('#table').bootstrapTable({
-//                        method: 'get',
-                        data:result,
-//                        cache: false,
-                        height: 400,
-                        striped: true,
-                        pagination: true,
-                        pageSize: 50,
-                        pageList: [10, 25, 50, 100, 200],
-                        search: true,
-                        showColumns: true,
-                        showRefresh: true,
-                        minimumCountColumns: 2,
-                        clickToSelect: true,
-                        columns: [{
-                            field: 'iconname',
-                            title: 'ICON',
-                            align: 'right',
-                            valign: 'bottom'
-                        }, {
-                            field: 'path',
-                            title: 'PATH',
-                            align: 'center',
-                            valign: 'middle',
-                            sortable: true
-                        }, {
-                            field: 'filename',
-                            title: 'FILE NAME',
-                            align: 'left',
-                            valign: 'top',
-                            sortable: true
-                        }]
-                    });
-//                    for(var i=0; i < jsonLoadFiles.length; i++){
-//                        var obj = jsonLoadFiles[i];
-//                        tableData += "<tr><td>"+obj["filename"]+"</td><td>"+obj["iconname"]+"</td><td>"+obj["path"]+"</td></tr>";
-//                    }
-//                    $("table").html(tableData);
-                }
-            });
-        }
-    </script>
 
 </head>
 
@@ -167,20 +80,25 @@
             <!-- Bread Crumb -->
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="page-header"> My Files</h1>
-                    <ol class="breadcrumb">
-                        <li class="active">
-                            <i class="fa fa-dashboard"></i> My Files
-                        </li>
-                    </ol>
+                    <h1 class="page-header" style="border-bottom: none"> My Files</h1>
+
                 </div>
             </div>
         </div>
     </div>
     <%--list display--%>
-    <table id="table" class="table-hover table table-bordered table-striped">
-
+    <div class="table-responsive">
+    <table id="table" name="table" class="table table-hover table-striped table-condensed">
+        <%--<tr>--%>
+            <%--<td>Name</td>--%>
+            <%--<td>Icon</td>--%>
+            <%--<td>Path</td>--%>
+        <%--</tr>--%>
     </table>
+    </div>
+    <%--<div>--%>
+        <%--<a href="#" class="btn btn-info btn-lg"><span class="fa fa-download"></span> Search</a>--%>
+    <%--</div>--%>
     <%----%>
 </div>
 

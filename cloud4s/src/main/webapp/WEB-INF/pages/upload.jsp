@@ -26,7 +26,7 @@
 <head>
     
     <link rel="stylesheet" type="text/css" href="css/button.css">
-    <link rel="stylesheet" type="text/css" href="css/main2.css">
+
     <title>PGP Demo - CLOUD4s</title>
 </head>
 

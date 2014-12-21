@@ -2,19 +2,12 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
-<html lang="en"><head>
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Sign up for cloud4s">
-    <meta name="author" content="Sameera">
+<html lang="en">
+<head>
+
     <link rel="icon" href="http://getbootstrap.com/favicon.ico">
 
     <title>SignUp - Cloud4s</title>
-
-    <link href="css/bootstrap.css" rel="stylesheet">
-    <link href="css/main.css" rel="stylesheet">
 
 </head>
 
