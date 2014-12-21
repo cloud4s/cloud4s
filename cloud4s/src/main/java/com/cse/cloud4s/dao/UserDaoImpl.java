@@ -42,7 +42,7 @@ public class UserDaoImpl implements UserDao {
 
 
     @SuppressWarnings("unchecked")
-    public void saveUser(String username,String Password, String email){
+    public void saveUser(String username,String Password, String email, String publickey){
         Session session=this.sessionFactory.openSession();
         session.beginTransaction();
 
@@ -52,6 +52,7 @@ public class UserDaoImpl implements UserDao {
         user.setUsername(username);
         user.setPassword(Password);
         user.setEmail(email);
+        user.setPublickey(publickey);
         user.setEnabled(true);
 //        user.setUserRole();
         userrole.setUser(user);

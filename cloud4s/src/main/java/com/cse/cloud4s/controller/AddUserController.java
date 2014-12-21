@@ -46,6 +46,7 @@ public class AddUserController {
             user.setUsername(username);
             user.setPassword(password);
             user.setEmail(email);
+            user.setPublickey(masterkey);
             addUser.addUser(user);
             model.setViewName("login");
             return model;
