@@ -6,8 +6,6 @@
 
 <head>
 
-    <link rel="icon" href="http://getbootstrap.com/favicon.ico">
-
     <title>DropBox Authentication</title>
 
 </head>

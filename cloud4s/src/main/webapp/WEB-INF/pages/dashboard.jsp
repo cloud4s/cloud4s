@@ -42,7 +42,7 @@
 
 </head>
 
-<body onload="harshikaAjax()">
+<body onload="loadTable()">
 <%--Header--%>
 <jsp:include page="header.jsp" />
 <%--Body Content--%>

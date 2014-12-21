@@ -1,6 +1,6 @@
 <%--
   Created by IntelliJ IDEA.
-  User: udeshi-p
+  User: sameera
   Date: 12/13/2014
   Time: 1:54 PM
   To change this template use File | Settings | File Templates.
@@ -13,6 +13,8 @@
 <html>
 <head>
 
+    <link rel="icon" href="/img/favicon.ico">
+
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -23,7 +25,7 @@
     <link href='<c:url value="/css/bootstrap.min.css" />' rel="stylesheet" type="text/css"/>
     <link href='<c:url value="/fonts/css/font-awesome.min.css" />' rel="stylesheet" type="text/css"/>
 
-    <script src='<c:url value="/js/jquery-2.0.0.js" />' type="text/javascript"></script>
+    <script src='<c:url value="/js/jquery.js" />' type="text/javascript"></script>
 
 </head>
 <body>
@@ -36,7 +38,7 @@
     </form>
 
     <script>
-        function formSubmit() {
+        function logOut() {
             $('#logoutForm').submit();
         }
     </script>
@@ -53,11 +55,11 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/#">Welcome</a>
+            <a class="navbar-brand" href="/#" style="color: #ffffff"><img src="/img/cloud_globe.png" style="height: 60px; margin-top: -10px;"></a>
         </div>
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav navbar-right">
+            <ul class="nav navbar-nav navbar-right" style="color: #ffffff">
 
                 <li id="serviceTab">
                     <a href="/#secA">Services</a>
@@ -69,7 +71,7 @@
                     ${pageContext.request.userPrincipal.name}
                </li>
                 <li style="display:${pageContext.request.userPrincipal.name == null ? 'none' : 'block'}">
-                    <a href="javascript:formSubmit()">Logout</a>
+                    <a href="javascript:logOut()">Logout</a>
                 </li>
 
             </ul>

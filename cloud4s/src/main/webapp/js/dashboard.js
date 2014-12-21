@@ -1,4 +1,4 @@
-function harshikaAjax() {
+function loadTable() {
     $.ajax({
         url : 'loadfiles.html',
         dataType : "json",

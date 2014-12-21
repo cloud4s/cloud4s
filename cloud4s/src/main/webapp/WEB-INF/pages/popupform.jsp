@@ -11,7 +11,7 @@
 <head>
     <title>Popup contact form</title>
     <link href="/css/elements.css" rel="stylesheet">
-    <script src="/js/my-js.js"></script>
+    <script src="/js/popup.js"></script>
 </head>
 <!-- Body Starts Here -->
 <body id="body" style="overflow:hidden;">
