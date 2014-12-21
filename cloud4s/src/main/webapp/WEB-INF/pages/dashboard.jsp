@@ -16,15 +16,15 @@
     <title>DashBoard - Cloud4s</title>
 
     <link href='<c:url value="/css/main.css" />' rel="stylesheet" type="text/css"/>
-    <link href='<c:url value="/css/bootstrap.min.css" />' rel="stylesheet" type="text/css"/>
-    <%--<link href='<c:url value="/css/bootstrap-theme.min.css" />' rel="stylesheet" type="text/css"/>--%>
-    <%--<link href='<c:url value="/css/bootstrap.icon-large.min.css" />' rel="stylesheet" type="text/css"/>--%>
-    <%--<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">--%>
-    <link href='<c:url value="/fonts/css/font-awesome.min.css" />' rel="stylesheet" type="text/css"/>
     <link href='<c:url value="/css/dashboard.css" />' rel="stylesheet" type="text/css"/>
+    <link href='<c:url value="/css/bootstrap.css" />' rel="stylesheet" type="text/css"/>
+    <link href='<c:url value="/css/bootstrap-table.css" />' rel="stylesheet" type="text/css"/>
+    <link href='<c:url value="/fonts/css/font-awesome.min.css" />' rel="stylesheet" type="text/css"/>
 
     <script src='<c:url value="/js/jquery-2.0.0.js" />' type="text/javascript"></script>
-    <script src="js/main.js"></script>
+    <script src='<c:url value="/js/bootstrap.js" />' type="text/javascript"></script>
+    <script src='<c:url value="/js/bootstrap-table.js" />' type="text/javascript"></script>
+    <script src='<c:url value="/js/main.js" />' type="text/javascript"></script>
 
     <!--AES sripts-->
     <script src="js/aes/jquery.js"></script>
@@ -77,66 +77,54 @@
                 type : 'GET',
                 success : function(data) {
                 var jsonLoadFiles=data.files;
-                    console.log(jsonLoadFiles);
-                    var tableData =" <thead><tr><th style='text-align: center'>"+ "#" +"</th><th style='text-align: left'>"+ "Name" +"</th><th style='text-align: left'>"+ "Kind" +"</th><th>"+ "  " +"</th></tr></thead>";
-                    tableData += "<tbody>";
-                    for(var i=0; i < jsonLoadFiles.length; i++){
-                        var obj = jsonLoadFiles[i];
-                        tableData += "<tr class='share-div'>";
-                        tableData += "<td style='text-align:center'>" +(i+1)+"</td>";
-                        tableData += "<td>"+obj["filename"]+"</td><td>"+obj["iconname"]+"</td><td style='text-align:center'>";
-                       // Set download button at the end of the table raw.
-                        var btn = " ";
-                        btn += "<button class='share-button btn btn-primary btn-xs' style=";
-                        btn += "'align:right'";
-                        btn += "type='submit'";
-                        btn += "id='"+"downloadButton"+i+" ' ";
-                        btn += "onclick='"+"download("+"this.id"+")'";
-                        btn += " value= '" +obj["filename"]+","+obj["path"]+"'>";
-                        btn += "<i class='fa fa-download'></i>"
-                        btn += "</button>";
-                        btn += "&nbsp;&nbsp;";
-                        btn += "<button class='share-button btn btn-primary btn-xs' style=";
-                        btn += "'align:right'";
-                        btn += "type='submit'";
-                        btn += "id='"+"shareButton"+i+" ' ";
-                        btn += "onclick='"+"share("+"this.id"+")'";
-                        btn += " value= '" +obj["filename"]+","+obj["path"]+"'>";
-                        btn += "<i class='fa fa-share'></i>"
-                        btn += "</button>";
-                        tableData += " "+btn+"</td>";
-                        tableData += "</tr>";
-                    }
-                    tableData += "</tbody>";
-                    $("table").html(tableData);
+                    console.log(JSON.stringify(jsonLoadFiles))
+
+                    var result = [];
+                    for(var i in jsonLoadFiles)
+                        result.push([i, jsonLoadFiles [i]]);
+
+                    //creating table
+                    $('#table').bootstrapTable({
+//                        method: 'get',
+                        data:result,
+//                        cache: false,
+                        height: 400,
+                        striped: true,
+                        pagination: true,
+                        pageSize: 50,
+                        pageList: [10, 25, 50, 100, 200],
+                        search: true,
+                        showColumns: true,
+                        showRefresh: true,
+                        minimumCountColumns: 2,
+                        clickToSelect: true,
+                        columns: [{
+                            field: 'iconname',
+                            title: 'ICON',
+                            align: 'right',
+                            valign: 'bottom'
+                        }, {
+                            field: 'path',
+                            title: 'PATH',
+                            align: 'center',
+                            valign: 'middle',
+                            sortable: true
+                        }, {
+                            field: 'filename',
+                            title: 'FILE NAME',
+                            align: 'left',
+                            valign: 'top',
+                            sortable: true
+                        }]
+                    });
+//                    for(var i=0; i < jsonLoadFiles.length; i++){
+//                        var obj = jsonLoadFiles[i];
+//                        tableData += "<tr><td>"+obj["filename"]+"</td><td>"+obj["iconname"]+"</td><td>"+obj["path"]+"</td></tr>";
+//                    }
+//                    $("table").html(tableData);
                 }
             });
         }
-
-
-        function download(id) {
-            var values = (document.getElementById(id).value).split(",");;
-            console.log(values);
-//            alert(values);
-            $.ajax({
-                type : "Get",
-                url : "download",
-                data : "filename=" + values[0] + "&path=" + values[1],
-                success : function(response) {
-                    alert(values[0]+"successfully downloaded.");
-                },
-                error : function(e) {
-                    alert('Error: ' + e);
-                }
-            });
-        }
-
-        function share(id) {
-            var values = (document.getElementById(id).value).split(",");;
-            console.log(values);
-            alert(values);
-        }
-
     </script>
 
 </head>
@@ -180,28 +168,19 @@
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header"> My Files</h1>
-                    <%--<ol class="breadcrumb">--%>
-                        <%--&lt;%&ndash;<li class="active">&ndash;%&gt;--%>
-                            <%--&lt;%&ndash;<i class="fa fa-dashboard"></i> My Files&ndash;%&gt;--%>
-                        <%--&lt;%&ndash;</li>&ndash;%&gt;--%>
-                    <%--</ol>--%>
+                    <ol class="breadcrumb">
+                        <li class="active">
+                            <i class="fa fa-dashboard"></i> My Files
+                        </li>
+                    </ol>
                 </div>
             </div>
         </div>
     </div>
     <%--list display--%>
-    <div class="table-responsive">
-    <table id="table" name="table" class="table table-hover table-striped table-condensed">
-        <%--<tr>--%>
-            <%--<td>Name</td>--%>
-            <%--<td>Icon</td>--%>
-            <%--<td>Path</td>--%>
-        <%--</tr>--%>
+    <table id="table" class="table-hover table table-bordered table-striped">
+
     </table>
-    </div>
-    <%--<div>--%>
-        <%--<a href="#" class="btn btn-info btn-lg"><span class="fa fa-download"></span> Search</a>--%>
-    <%--</div>--%>
     <%----%>
 </div>
 
