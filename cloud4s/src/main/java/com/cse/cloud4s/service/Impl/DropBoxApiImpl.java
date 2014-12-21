@@ -84,21 +84,16 @@ public class DropBoxApiImpl implements DropBoxApi {
         } finally {
             inputStream.close();
         }
-
-
-
     }
 
-    public void downloadfile(DbxClient client,String filename,String dest_path) throws DbxException,IOException{ //file name should be in string of downloading file.path should be where to be downloaded
-        FileOutputStream outputStream = new FileOutputStream(filename);
+    public void downloadfile(DbxClient client,String filename,String path) throws DbxException,IOException{ //file name should be in string of downloading file.path should be where to be downloaded
+        FileOutputStream outputStream = new FileOutputStream("/home/hasitha/"+filename);
         try {
-            DbxEntry.File downloadedFile = client.getFile(dest_path,null,outputStream);
+            DbxEntry.File downloadedFile = client.getFile(path,null,outputStream);
             System.out.println("Metadata: " + downloadedFile.toString());
         } finally {
             outputStream.close();
         }
-
-
     }
 
     public DbxEntry.WithChildren loadfiles(DbxClient client) throws DbxException { //loading details of files.  only printing name and icon name.there are other attributes also.eg: child.attr
@@ -112,8 +107,6 @@ public class DropBoxApiImpl implements DropBoxApi {
     }
 
     private void getToken(String url) throws Exception {
-
-
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
 

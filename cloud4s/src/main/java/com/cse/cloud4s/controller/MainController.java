@@ -102,8 +102,6 @@ public class MainController {
             model.setViewName("dashboard");
             return model;
         }
-
-
     }
 
 
@@ -114,8 +112,6 @@ public class MainController {
         ModelAndView model = new ModelAndView();
         String LocalPath="/home/hasitha/Downloads/"+filename;
         String DropboxPath="/"+filename;
-
-
 
         try {
             Thread.sleep(5000);// have to remove wih proper mechanism
@@ -130,7 +126,28 @@ public class MainController {
 
         model.setViewName("dashboard");
         return model;
+    }
 
+    //File downloading function
+    @RequestMapping(value = { "/download" }, method = RequestMethod.GET)
+    public ModelAndView uploadPage(@ModelAttribute("filename")String filename,
+                                   @ModelAttribute("path")String path) {
+        String FileName = filename;
+        String Path = path;
+        System.out.println("Filename : "+FileName);
+        System.out.println("File path : "+Path);
+        try {
+            //String LocalPath="/home/hasitha/Downloads/"+filename;
+            //Thread.sleep(5000);// have to remove wih proper mechanism
+            dropboxapi.downloadfile(client,FileName,Path);
+        } catch (DbxException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        ModelAndView model = new ModelAndView();
+        model.setViewName("dashboard");
+        return model;
     }
 
 //    @RequestMapping(value = { "/saveuser**" }, method = RequestMethod.POST)
@@ -161,11 +178,8 @@ public class MainController {
 //    public DbxEntry.WithChildren loadFiles() {
 //    public JsonResponse loadFiles() {
     public String loadFiles() throws JarException{
-
-
         String note;
         DbxEntry.WithChildren list;
-
         JSONObject[] fileList;
         int i=0;
         JSONArray listArray = new JSONArray();
@@ -174,15 +188,7 @@ public class MainController {
         try {
             list= dropboxapi.loadfiles(client);
             fileList=new JSONObject[list.children.size()];
-
-//            String[] details ={list.children.get(0).name, list.children.get(0).iconName, list.children.get(0).path};
-//            one.put("filename",list.children.get(0).name);
-//            one.put("iconname",list.children.get(0).iconName);
-//            one.put("path",list.children.get(0).path);
-//            one.put("filename", details);
-
             for (DbxEntry child : list.children) {
-//                    jasonresponse.addRow(new JsonResponse.Cell(child.name), new JsonResponse.Cell(child.iconName), new JsonResponse.Cell(child.path));
                       fileList[i]=new JSONObject();
                       fileList[i].put("filename",child.name);
                       fileList[i].put("iconname",child.iconName);
@@ -193,12 +199,9 @@ public class MainController {
             results.put("files",listArray);
         } catch (DbxException e) {
             e.printStackTrace();
-//            jasonresponse.addRow(new JsonResponse.Cell(" error "), new JsonResponse.Cell(" error"), new JsonResponse.Cell(" error "));
             results.put("files","error");
         }
-
         System.out.println( results.toString() );
-
     return results.toString();
 
 }
