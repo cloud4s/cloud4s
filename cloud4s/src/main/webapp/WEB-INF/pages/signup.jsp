@@ -70,7 +70,7 @@
             <input id="publicKey" class="form-control col-lg-8" name="publicKey" required=""  type="hidden" >
         </div>
         </br>
-        <button id="b_signup" class="btn btn-lg btn-primary btn-block" type="submit" disabled>Sign up</button>
+        <button id="b_signup" class="btn btn-lg btn-primary btn-block" type="submit" onclick="insert_value()" disabled>Sign up</button>
         <%--<input name="submit" type="submit"--%>
                <%--value="submit" class="btn btn-lg btn-primary btn-block" />--%>
 

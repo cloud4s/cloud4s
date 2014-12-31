@@ -26,8 +26,34 @@
     <link href='<c:url value="/fonts/css/font-awesome.min.css" />' rel="stylesheet" type="text/css"/>
 
     <script src='<c:url value="/js/jquery.js" />' type="text/javascript"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/prototype/1.7.1.0/prototype.js"></script>
+    <script src="../../js/jstorage.js"></script>
+    <script src="../../js/browserstore.js"></script>
 
 </head>
+<script>
+    function get_value(){
+
+        var value = $.jStorage.get("${pageContext.request.userPrincipal.name}");
+
+//        alert(value);
+
+        return value;
+    }
+
+
+    function insert_value(){
+
+        var row = new Element("tr"),
+                key = $('inputName').value,
+                val = $('inputKey').value;
+        if (!key) {
+            $('inputName').focus();
+            return;
+        }
+        $.jStorage.set(key, val);
+    }
+</script>
 <body>
 <sec:authorize access="hasRole('ROLE_USER')">
     <!-- For login user -->
