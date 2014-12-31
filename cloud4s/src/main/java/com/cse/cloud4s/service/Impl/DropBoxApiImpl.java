@@ -87,7 +87,7 @@ public class DropBoxApiImpl implements DropBoxApi {
     }
 
     public void downloadfile(DbxClient client,String filename,String path) throws DbxException,IOException{ //file name should be in string of downloading file.path should be where to be downloaded
-        FileOutputStream outputStream = new FileOutputStream("/home/hasitha/"+filename);
+        FileOutputStream outputStream = new FileOutputStream("C:/Users/hp/Downloads/"+filename);
         try {
             DbxEntry.File downloadedFile = client.getFile(path,null,outputStream);
             System.out.println("Metadata: " + downloadedFile.toString());

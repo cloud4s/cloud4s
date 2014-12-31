@@ -41,6 +41,7 @@
         function logOut() {
             $('#logoutForm').submit();
         }
+
     </script>
 
 </sec:authorize>
