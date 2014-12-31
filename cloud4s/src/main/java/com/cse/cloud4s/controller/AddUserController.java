@@ -32,7 +32,7 @@ public class AddUserController {
     public ModelAndView saveUser(@ModelAttribute("inputName")String username,
                                  @ModelAttribute("inputEmail")String email,
                                  @ModelAttribute("inputPassword")String password,
-                                 @ModelAttribute("inputKey")String masterkey,
+                                 @ModelAttribute("publicKey")String masterkey,
                                  BindingResult result) {
         ModelAndView model = new ModelAndView();
         User user = new User();
