@@ -61,7 +61,7 @@
             <tr>
                 <td>
                     <div class="checkbox">
-                        <label> <input value="remember-me" type="checkbox"> Remember</label>
+                        <label> <input value="remember-me" type="checkbox"> Remember me</label>
                     </div>
                 </td>
             </tr>
