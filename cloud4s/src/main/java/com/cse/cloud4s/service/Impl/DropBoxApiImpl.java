@@ -133,4 +133,9 @@ public class DropBoxApiImpl implements DropBoxApi {
 
     }
 
+    public void sharefile(DbxClient client,String url)throws IOException, DbxException{
+
+
+    }
+
 }

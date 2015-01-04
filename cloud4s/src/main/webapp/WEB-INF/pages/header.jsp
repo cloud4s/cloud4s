@@ -26,9 +26,9 @@
     <link href='<c:url value="/fonts/css/font-awesome.min.css" />' rel="stylesheet" type="text/css"/>
 
     <script src='<c:url value="/js/jquery.js" />' type="text/javascript"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/prototype/1.7.1.0/prototype.js"></script>
+    <%--<script src="http://ajax.googleapis.com/ajax/libs/prototype/1.7.1.0/prototype.js"></script>--%>
     <script src="../../js/jstorage.js"></script>
-    <script src="../../js/browserstore.js"></script>
+    <%--<script src="../../js/browserstore.js"></script>--%>
 
 </head>
 <script>

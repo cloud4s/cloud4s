@@ -136,6 +136,59 @@
             console.log(values);
             alert(values);
         }
+        function encryptFile() {
+            $('#fileName').val("testFile");
+//            var files = document.getElementById('files').files;
+//            var file = files[0];
+//            var start = 0;
+//            var stop = file.size - 1;
+//            var reader = new FileReader();
+//            // If we use onloadend, we need to check the readyState.
+//            reader.onloadend = function(evt) {
+//                if (evt.target.readyState == FileReader.DONE) { // DONE == 2
+//                    var byteString = evt.target.result;
+//                    var password = Math.ceil(Math.random()*100000);
+//                    var ciphertext = Aes.Ctr.encrypt(byteString, password, 256);//cipher text is string array
+//                    console.log(ciphertext);
+
+                    $.ajax({
+                        type : "POST",
+                        contentType: "application/json; charset=utf-8",
+                        url : "upload.html",
+                        dataType: "json",
+                        data : JSON.stringify(data),
+                        success : function(response) {
+                            alert(response);
+                        },
+                        error : function(e) {
+                            alert('Error: ' + e);
+                        }
+                    });
+
+        }
+
+
+        function getAllUsers(){
+            $.ajax({
+                url : 'getAllUsers.html',
+                dataType : "json",
+                cache : false ,
+                contentType : 'application/json; charset=utf-8',
+                type : 'GET',
+                success : function(data) {
+                    var jsonLoadUsers=data.users;
+                    console.log(jsonLoadUsers);
+                    var userNameList;
+
+                    for(var i=0; i < jsonLoadUsers.length; i++){
+                        var obj = jsonLoadFiles[i];
+                        userNameList.append( obj["username"]+"  ");
+
+                    }
+                    alert(userNameList);
+                }
+            });
+        }
 
     </script>
 
@@ -162,10 +215,10 @@
 
                 </li>
                 <li class="active">
-                    <a href="dashboard.html"><i class="fa fa-fw fa-dashboard"></i> My Files</a>
+                    <a href="javascript:readFile()"><i class="fa fa-fw fa-dashboard"></i> My Files</a>
                 </li>
                 <li>
-                    <a href="dashboard.html"><i class="fa fa-fw fa-bar-chart-o"></i> Shared</a>
+                    <a href="javascript:getAllUsers()"><i class="fa fa-fw fa-bar-chart-o"></i> Shared</a>
                 </li>
 
             </ul>
@@ -185,6 +238,7 @@
                             <%--&lt;%&ndash;<i class="fa fa-dashboard"></i> My Files&ndash;%&gt;--%>
                         <%--&lt;%&ndash;</li>&ndash;%&gt;--%>
                     <%--</ol>--%>
+
                 </div>
             </div>
         </div>

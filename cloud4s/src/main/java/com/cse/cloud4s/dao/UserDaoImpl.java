@@ -67,6 +67,18 @@ public class UserDaoImpl implements UserDao {
 
     }
 
+    public List<User> allUsers(){
+        Session session=this.sessionFactory.openSession();
+        session.beginTransaction();
+
+        List<User> allUsers;
+
+        allUsers = session.createQuery("from User").list();
+
+        session.close();
+        return allUsers;
+    }
+
     public SessionFactory getSessionFactory() {
         return sessionFactory;
     }

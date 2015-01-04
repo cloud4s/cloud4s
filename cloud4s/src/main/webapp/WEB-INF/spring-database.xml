@@ -40,6 +40,9 @@
         </property>
     </bean>
 
+    <bean id="SharedDao" class="com.cse.cloud4s.dao.SharedDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
     <bean id="userDao" class="com.cse.cloud4s.dao.UserDaoImpl">
         <property name="sessionFactory" ref="sessionFactory" />
     </bean>
@@ -53,6 +56,9 @@
 
     <bean id="addUser" class="com.cse.cloud4s.service.Impl.addUserImpl">
         <property name="userDao" ref="userDao" />
+    </bean>
+    <bean id="shareApi" class="com.cse.cloud4s.service.Impl.shareApiImpl">
+        <property name="SharedDao" ref="SharedDao" />
     </bean>
 
     <!-- MUST have transaction manager, using aop and aspects  -->

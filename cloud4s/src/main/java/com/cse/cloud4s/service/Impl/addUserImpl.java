@@ -12,6 +12,7 @@ import com.cse.cloud4s.service.addUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 
+import java.util.List;
 
 
 public class addUserImpl implements addUser {
@@ -25,7 +26,10 @@ public class addUserImpl implements addUser {
             userDao.saveUser(user.getUsername(),user.getPassword(), user.getEmail(),user.getPublickey());
     }
 
-
+    @Override
+    public List<com.cse.cloud4s.model.User> getAllUsers(){
+        return userDao.allUsers();
+    }
 
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;

@@ -15,6 +15,12 @@ CREATE TABLE user_roles (
   KEY fk_username_idx (username),
   CONSTRAINT fk_username FOREIGN KEY (username) REFERENCES users (username));
 
+CREATE  TABLE shared (
+  username VARCHAR(45) NOT NULL ,
+  filename VARCHAR(60) NOT NULL ,
+  link varchar(70) NOT NULL,
+  PRIMARY KEY (username));
+
 INSERT INTO users(username,password,enabled,email,publickey)
 VALUES('alex', '123456', 1, 'sd@reaasdssa.com','alex'),
 ('harshika', 'joka', 1, 'hdranaweera@gmail.com','harshika'),

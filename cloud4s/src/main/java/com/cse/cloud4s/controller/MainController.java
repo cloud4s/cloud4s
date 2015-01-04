@@ -6,6 +6,7 @@ package com.cse.cloud4s.controller;
 import com.cse.cloud4s.dao.UserDao;
 import com.cse.cloud4s.service.DropBoxApi;
 import com.cse.cloud4s.service.JsonResponse;
+import com.cse.cloud4s.service.shareApi;
 import com.dropbox.core.DbxClient;
 import com.dropbox.core.DbxEntry;
 import com.dropbox.core.DbxException;
@@ -24,6 +25,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.jar.JarException;
 
@@ -39,6 +42,10 @@ public class MainController {
     @Qualifier("JsonResponse")
     @Autowired
     public JsonResponse jasonresponse;
+
+    @Qualifier("shareApi")
+    @Autowired
+    private shareApi shareapi;
 
     public UserDao userdao;
 
@@ -104,7 +111,29 @@ public class MainController {
         }
     }
 
-
+//    @RequestMapping(value = { "/upload" }, method = RequestMethod.POST)
+//    public @ResponseBody
+//    ModelAndView uploadPage(@ModelAttribute("fileName")String filename, HttpServletRequest request, HttpServletResponse response) {
+//
+//        ModelAndView model = new ModelAndView();
+//        String LocalPath="C:/Users/hp/Downloads/"+filename;
+//        String DropboxPath="/"+filename;
+//
+//        try {
+//            Thread.sleep(5000);// have to remove wih proper mechanism
+//            dropboxapi.uploadFile(client,LocalPath,DropboxPath);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        } catch (DbxException e) {
+//            e.printStackTrace();
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//
+//        model.setViewName("dashboard");
+//        return model;
+//    }
+//
     @RequestMapping(value = { "/upload" }, method = RequestMethod.GET)
     public ModelAndView uploadPage(@ModelAttribute("fileName")String filename,
                                    BindingResult result) {
@@ -123,6 +152,27 @@ public class MainController {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+        model.setViewName("dashboard");
+        return model;
+    }
+
+    @RequestMapping(value = { "/share" }, method = RequestMethod.GET)
+    public ModelAndView shareFile(@ModelAttribute("fileName")String filename,
+                                  @ModelAttribute("path")String path,
+                                  @ModelAttribute("username")String username,
+                                  BindingResult result) {
+
+        ModelAndView model = new ModelAndView();
+
+        try {
+            String Url= client.createShareableUrl(path);
+            shareapi.shareLink(username,filename,Url);
+        } catch (DbxException e) {
+            e.printStackTrace();
+        }
+
+
 
         model.setViewName("dashboard");
         return model;

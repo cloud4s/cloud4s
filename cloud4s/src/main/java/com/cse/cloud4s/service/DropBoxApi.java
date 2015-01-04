@@ -20,4 +20,6 @@ public interface DropBoxApi {
     public void downloadfile(DbxClient client,String filename,String dest_path) throws DbxException,IOException;
 
     public DbxEntry.WithChildren loadfiles(DbxClient client) throws DbxException;
+
+    public void sharefile(DbxClient client,String url) throws IOException, DbxException;
 }
