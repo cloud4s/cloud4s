@@ -4,7 +4,10 @@ package com.cse.cloud4s.controller;
  * Created by hp on 12/3/2014.
  */
 import com.cse.cloud4s.dao.UserDao;
+import com.cse.cloud4s.model.Shared;
+import com.cse.cloud4s.model.User;
 import com.cse.cloud4s.service.DropBoxApi;
+import com.cse.cloud4s.service.FileKeyApi;
 import com.cse.cloud4s.service.JsonResponse;
 import com.cse.cloud4s.service.shareApi;
 import com.dropbox.core.DbxClient;
@@ -27,7 +30,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 import java.util.jar.JarException;
 
 @Controller
@@ -47,7 +54,12 @@ public class MainController {
     @Autowired
     private shareApi shareapi;
 
+    @Qualifier("FileKey")
+    @Autowired
+    private FileKeyApi fileKeyApiApi;
+
     public UserDao userdao;
+    public String encryptedFilekey = "";
 
     DbxClient client;
 
@@ -139,12 +151,12 @@ public class MainController {
                                    BindingResult result) {
 
         ModelAndView model = new ModelAndView();
-        String LocalPath="C:/Users/hp/Downloads/"+filename;
-        String DropboxPath="/"+filename;
+        String LocalPath="C:/Users/hp/Downloads/";
+//        String DropboxPath="/"+filename;
 
         try {
             Thread.sleep(5000);// have to remove wih proper mechanism
-            dropboxapi.uploadFile(client,LocalPath,DropboxPath);
+            dropboxapi.uploadFile(client,filename,LocalPath);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (DbxException e) {
@@ -161,13 +173,15 @@ public class MainController {
     public ModelAndView shareFile(@ModelAttribute("fileName")String filename,
                                   @ModelAttribute("path")String path,
                                   @ModelAttribute("username")String username,
+                                  @ModelAttribute("filekay")String filekey,
                                   BindingResult result) {
 
         ModelAndView model = new ModelAndView();
 
         try {
-            String Url= client.createShareableUrl(path);
-            shareapi.shareLink(username,filename,Url);
+            String Url_old= client.createShareableUrl(path);
+            String Url = Url_old.substring(0, Url_old.length() - 1)+"1";
+            shareapi.shareLink(username,filename,Url,filekey);
         } catch (DbxException e) {
             e.printStackTrace();
         }
@@ -178,23 +192,93 @@ public class MainController {
         return model;
     }
 
+    @RequestMapping(value = { "/getShare**" }, method = RequestMethod.GET)
+    @ResponseBody
+    public String getShareFiles(@ModelAttribute("username")String username) throws JarException{
+        String note;
+
+        int i=0;
+        JSONArray listArray = new JSONArray();
+        JSONObject results= new JSONObject();
+
+        List<Shared> sharedFileList;
+        sharedFileList=shareapi.getAllShareLink(username);
+
+        JSONObject[] fileList= new JSONObject[sharedFileList.size()];
+
+        for (Shared share : sharedFileList) {
+            fileList[i] = new JSONObject();
+            fileList[i].put("filename", share.getfilename());
+            fileList[i].put("url", share.getlink());
+            fileList[i].put("filekey", share.getfilekey());
+            listArray.add(fileList[i]);
+            i++;
+        }
+        results.put("sharedFiles",listArray);
+        System.out.println( results.toString() );
+        return results.toString();
+
+    }
+
+
+    @RequestMapping(value = { "/getFile" }, method = RequestMethod.GET)
+    @ResponseBody
+    public String readFile(@ModelAttribute("filename")String filename) throws JarException {
+        JSONObject[] filejson = new JSONObject[2];
+        int i = 0;
+        JSONArray listArray = new JSONArray();
+        JSONObject results = new JSONObject();
+        File file = new File("C:/Users/hp/Downloads/"+filename);
+        FileInputStream fin = null;
+        try {
+            // create FileInputStream object
+            fin = new FileInputStream(file);
+            byte fileContent[] = new byte[(int) file.length()];
+            // Reads up to certain bytes of data from this input stream into an array of bytes.
+            fin.read(fileContent);
+            //create string from byte array
+            String s = new String(fileContent);
+            System.out.println("File content: " + s);
+            results.put("fileContent", s);
+            results.put("encryptedKey",encryptedFilekey);
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found" + e);
+            results.put("fileContent", "FileNotFoundException");
+        } catch (IOException ioe) {
+            System.out.println("Exception while reading file " + ioe);
+            results.put("fileContent", "IOException");
+        } finally {
+            // close the streams using close method
+            try {
+                if (fin != null) {
+                    fin.close();
+                }
+            } catch (IOException ioe) {
+                System.out.println("Error while closing stream: " + ioe);
+            }
+        }
+        System.out.println(results.toString());
+        return results.toString();
+    }
     //File downloading function
     @RequestMapping(value = { "/download" }, method = RequestMethod.GET)
     public ModelAndView uploadPage(@ModelAttribute("filename")String filename,
+                                   @ModelAttribute("username")String username,
                                    @ModelAttribute("path")String path) {
         String FileName = filename;
+        String Username = username;
         String Path = path;
         System.out.println("Filename : "+FileName);
         System.out.println("File path : "+Path);
         try {
-            //String LocalPath="/home/hasitha/Downloads/"+filename;
-            //Thread.sleep(5000);// have to remove wih proper mechanism
             dropboxapi.downloadfile(client,FileName,Path);
         } catch (DbxException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        encryptedFilekey = fileKeyApiApi.getFileKey(FileName,Username);
+        System.out.println("File Key from DB :"+ encryptedFilekey);
         ModelAndView model = new ModelAndView();
         model.setViewName("dashboard");
         return model;
@@ -295,6 +379,16 @@ public class MainController {
         return model;
 
     }
+    @RequestMapping(value = "/popupform", method = RequestMethod.GET)
+    public ModelAndView popup() {
+
+        ModelAndView model = new ModelAndView();
+
+        model.setViewName("popupform");
+
+        return model;
+
+    }
 
     //for 403 access denied page
     @RequestMapping(value = "/403", method = RequestMethod.GET)
@@ -316,5 +410,17 @@ public class MainController {
         return model;
 
     }
+
+    @RequestMapping(value = { "/filekey" }, method = RequestMethod.GET)
+    public void uploadKey(@ModelAttribute("enKey")String enKey,
+                          @ModelAttribute("fileName")String fileName,
+                          @ModelAttribute("username")String username,
+                          BindingResult result) {
+        System.out.println("fileName:"+fileName +"  "+"enKey:"+enKey+" username:"+username);
+        com.cse.cloud4s.model.FileKey fileKey = new com.cse.cloud4s.model.FileKey(fileName+".encrypted",enKey,username);
+        fileKeyApiApi.saveFileKey(fileKey);
+    }
+
+
 
 }

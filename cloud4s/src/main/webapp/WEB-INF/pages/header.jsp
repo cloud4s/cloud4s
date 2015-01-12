@@ -26,32 +26,37 @@
     <link href='<c:url value="/fonts/css/font-awesome.min.css" />' rel="stylesheet" type="text/css"/>
 
     <script src='<c:url value="/js/jquery.js" />' type="text/javascript"></script>
+    <script src='<c:url value="/js/jquery-ui.js" />' type="text/javascript"></script>
     <%--<script src="http://ajax.googleapis.com/ajax/libs/prototype/1.7.1.0/prototype.js"></script>--%>
-    <script src="../../js/jstorage.js"></script>
+    <%--<script src="//cdnjs.cloudflare.com/ajax/libs/json2/20110223/json2.js"></script>--%>
+    <%--<script src="../../js/jstorage.js"></script>--%>
+    <%--<script src="https://raw.github.com/andris9/jStorage/master/jstorage.js"></script>--%>
+
+    <%--<link href="/css/elements.css" rel="stylesheet">--%>
+    <%--<script src="/js/my-js.js"></script>--%>
     <%--<script src="../../js/browserstore.js"></script>--%>
 
 </head>
+
 <script>
     function get_value(){
-
-        var value = $.jStorage.get("${pageContext.request.userPrincipal.name}");
-
-//        alert(value);
-
-        return value;
+        var key = localStorage.getItem("${pageContext.request.userPrincipal.name}");
+        alert(key);
+        if (key!=null){
+            return key;
+        }
+        else{
+            div_show();
+            var val = $('inputKey').value;
+            return val;
+        }
     }
 
-
     function insert_value(){
-
-        var row = new Element("tr"),
-                key = $('inputName').value,
+        var key = $('inputName').value,
                 val = $('inputKey').value;
-        if (!key) {
-            $('inputName').focus();
-            return;
-        }
-        $.jStorage.set(key, val);
+        localStorage.setItem(key, val);
+
     }
 </script>
 <body>
@@ -107,6 +112,8 @@
     </div>
     <!-- /.container -->
 </nav>
+
+
 
 </body>
 </html>

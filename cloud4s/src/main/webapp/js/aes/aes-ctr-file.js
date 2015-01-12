@@ -16,17 +16,22 @@ function encryptFile(file) {
         for (var i=0; i<contentBytes.length; i++) {
             contentStr += String.fromCharCode(contentBytes[i]);
         }
-
-        var password = $('#password-file').val();
-
+        //var password = $('#password-file').val();
+        //var fileKey = Math.uuid();Math.floor((Math.random() * 100000000) + 1);
+        var fileKey = String(Math.floor((Math.random() * 10000000) + 1));
+        //var fileKey = "12345";
+        alert("File key generated:"+fileKey);
+        //console.log("File key generated:"+fileKey);
         var t1 = new Date();
-        var ciphertext = Aes.Ctr.encrypt(contentStr, password, 256);
+        var ciphertext = Aes.Ctr.encrypt(contentStr, fileKey, 256);
         var t2 = new Date();
-
+        //saveFileKey(fileKey,file.name);
+        sendFileKeyToDB(fileKey,file.name)
         // use Blob to save encrypted file
         var blob = new Blob([ciphertext], { type: 'text/plain' });
         var filename = file.name+'.encrypted';
         var result = saveAs(blob, filename);
+        uploadEncryptedFile(filename);
         $('#fileName').val(filename);
         $('#uploadForm').submit();
         $('#encrypt-file-time').html(((t2 - t1)/1000)+'s'); // display time taken

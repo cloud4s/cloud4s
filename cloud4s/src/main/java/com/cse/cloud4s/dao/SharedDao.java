@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface SharedDao {
 
-    public void saveLink(String username, String filename, String link);
+    public void saveLink(String username, String filename, String link, String filekey);
 
     public List<Shared> getLink(String username);
 }

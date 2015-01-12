@@ -15,7 +15,7 @@ public class SharedDaoImpl implements SharedDao {
     @Autowired
     private SessionFactory sessionFactory;
 
-    public void saveLink(String username, String filename, String link){
+    public void saveLink(String username, String filename, String link, String filekey){
         Session session=this.sessionFactory.openSession();
         session.beginTransaction();
 
@@ -24,6 +24,7 @@ public class SharedDaoImpl implements SharedDao {
         shared.setUsername(username);
         shared.setfilename(filename);
         shared.setlink(link);
+        shared.setfilekey(filekey);
 
         session.save(shared);
 

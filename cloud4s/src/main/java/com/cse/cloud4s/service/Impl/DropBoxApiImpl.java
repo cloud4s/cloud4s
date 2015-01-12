@@ -72,15 +72,16 @@ public class DropBoxApiImpl implements DropBoxApi {
     public void uploadFile(DbxClient client,String name,String path) throws IOException,DbxException{ //uploading file..should identify path name and path
 
 
-        File inputFile = new File(name);
+        String fileName = name;
+        String localPath = path+fileName;
+        String DropboxPath="/Files/"+fileName;
+        File inputFile = new File(localPath);
         FileInputStream inputStream = new FileInputStream(inputFile);
         try {
-
-            DbxEntry.File uploadedFile = client.uploadFile(path,
+            DbxEntry.File uploadedFile = client.uploadFile(DropboxPath,
                     DbxWriteMode.add(), inputFile.length(), inputStream);
             System.out.println("Uploaded: " + uploadedFile.toString());
             url=uploadedFile.path;
-
         } finally {
             inputStream.close();
         }
@@ -97,12 +98,11 @@ public class DropBoxApiImpl implements DropBoxApi {
     }
 
     public DbxEntry.WithChildren loadfiles(DbxClient client) throws DbxException { //loading details of files.  only printing name and icon name.there are other attributes also.eg: child.attr
-        DbxEntry.WithChildren listing = client.getMetadataWithChildren("/");
+        DbxEntry.WithChildren listing = client.getMetadataWithChildren("/Files");
         System.out.println("Files in the root path:");
         for (DbxEntry child : listing.children) {
             System.out.println("    " + child.name + ": " + child.iconName+":"+child.path);
         }
-
         return listing;
     }
 

@@ -10,7 +10,7 @@ import java.util.List;
  */
 public interface shareApi {
 
-    public  void shareLink(String username, String filename, String link);
+    public  void shareLink(String username, String filename, String link, String filekey);
 
     public List<Shared> getAllShareLink( String username);
 }

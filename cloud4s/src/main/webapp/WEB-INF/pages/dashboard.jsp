@@ -23,11 +23,11 @@
     <link href='<c:url value="/fonts/css/font-awesome.min.css" />' rel="stylesheet" type="text/css"/>
     <link href='<c:url value="/css/dashboard.css" />' rel="stylesheet" type="text/css"/>
 
-    <script src='<c:url value="/js/jquery-2.0.0.js" />' type="text/javascript"></script>
+    <%--<script src='<c:url value="/js/jquery.js" />' type="text/javascript"></script>--%>
     <script src="js/main.js"></script>
 
     <!--AES sripts-->
-    <script src="js/aes/jquery.js"></script>
+    <%--<script src="js/aes/jquery.js"></script>--%>
     <script src="js/aes/aes.js"></script>
     <script src="js/aes/aes-ctr.js"></script>
     <script src="js/aes/aes-ctr-file.js"></script>
@@ -45,6 +45,8 @@
     <script src="js/rsa/jsbn.js"></script>
     <script src="js/rsa/random.js"></script>
     <script src="js/rsa/jsencrypt.js"></script>
+
+    <script src="js/FileSaver.js"></script>
 
     <sec:authorize access="hasRole('ROLE_USER')">
         <!-- For login user -->
@@ -68,6 +70,7 @@
     </sec:authorize>
 
     <script type="text/javascript">
+        var userList;
         function harshikaAjax() {
             $.ajax({
                 url : 'loadfiles.html',
@@ -117,13 +120,14 @@
         function download(id) {
             var values = (document.getElementById(id).value).split(",");;
             console.log(values);
-//            alert(values);
+            var username = "${pageContext.request.userPrincipal.name}";
             $.ajax({
                 type : "Get",
                 url : "download",
-                data : "filename=" + values[0] + "&path=" + values[1],
+                data : "filename=" + values[0] + "&path=" + values[1]+"&username="+username,
                 success : function(response) {
-                    alert(values[0]+"successfully downloaded.");
+//                    alert(values[0]+" successfully downloaded.");
+                    readFile(values[0]);
                 },
                 error : function(e) {
                     alert('Error: ' + e);
@@ -132,43 +136,91 @@
         }
 
         function share(id) {
-            var values = (document.getElementById(id).value).split(",");;
-            console.log(values);
-            alert(values);
-        }
-        function encryptFile() {
-            $('#fileName').val("testFile");
-//            var files = document.getElementById('files').files;
-//            var file = files[0];
-//            var start = 0;
-//            var stop = file.size - 1;
-//            var reader = new FileReader();
-//            // If we use onloadend, we need to check the readyState.
-//            reader.onloadend = function(evt) {
-//                if (evt.target.readyState == FileReader.DONE) { // DONE == 2
-//                    var byteString = evt.target.result;
-//                    var password = Math.ceil(Math.random()*100000);
-//                    var ciphertext = Aes.Ctr.encrypt(byteString, password, 256);//cipher text is string array
-//                    console.log(ciphertext);
+            var values = (document.getElementById(id).value).split(",");
+            getAllUsers();
+            var usersList = userList;
+            var popupHTML = "";
+            for(var user in usersList){
+                popupHTML += "<label>"+JSON.stringify(user)+"</label>"
+            }
+            $("#sharePopUp").html(popupHTML);
 
-                    $.ajax({
-                        type : "POST",
-                        contentType: "application/json; charset=utf-8",
-                        url : "upload.html",
-                        dataType: "json",
-                        data : JSON.stringify(data),
-                        success : function(response) {
-                            alert(response);
+            $(function() {
+                var popup = $( "#sharePopUp" );
+                popup.dialog({
+                    autoOpen: false,
+                    modal: true,
+                    buttons: {
+                        "Share": function() {
+                            //shareFile();
                         },
-                        error : function(e) {
-                            alert('Error: ' + e);
+                        "Cancel": function() {
+                            $( this ).dialog( "close" );
                         }
-                    });
+                    },
+                    hide: "puff",
+                    show : "slide",
+                    height: 400,
+                    width:500
+                });
+//                $( ".shareButton" ).click(function() {
+//                    popup.dialog( "open" )
+//                });
+                popup.dialog( "open" );
+            });
 
+        }
+
+        function decryptFile(file,key){
+            var start = 0;
+            var stop = file.size - 1;
+            var reader = new FileReader();
+            // If we use onloadend, we need to check the readyState.
+            reader.onloadend = function(evt) {
+                if (evt.target.readyState == FileReader.DONE) { // DONE == 2
+                    var data = evt.target.result;
+                    console.log(data);
+                }
+            };
+            var blob = file.slice(start, stop + 1);
+            reader.readAsBinaryString(blob);
+        }
+
+        function sendFileKeyToDB(fileKey,fileName){
+            var MasterKey = "hasithaKey";
+            var encryptedFileKey = Aes.Ctr.encrypt(fileKey,MasterKey,256);
+            alert("encrypted file key:"+encryptedFileKey);
+            var username = "${pageContext.request.userPrincipal.name}";
+            $.ajax({
+                type : "Get",
+                url : "filekey",
+                data : "enKey=" + encryptedFileKey + "&fileName=" + fileName+"&username="+username,
+                success : function(response) {
+                    console.log( fileName+ ": encrypted key uploaded to DB.");
+                },
+                error : function(e) {
+                    alert('Error: ' + e);
+                }
+            });
+        }
+
+        function uploadEncryptedFile(fileName){
+            $.ajax({
+                type : "Get",
+                url : "upload",
+                data : "fileName=" + fileName,
+                success : function(response) {
+                    console.log(fileName+": successfully uploaded.");
+                },
+                error : function(e) {
+                    alert('Error: ' + e);
+                }
+            });
         }
 
 
         function getAllUsers(){
+            var data;
             $.ajax({
                 url : 'getAllUsers.html',
                 dataType : "json",
@@ -178,16 +230,51 @@
                 success : function(data) {
                     var jsonLoadUsers=data.users;
                     console.log(jsonLoadUsers);
-                    var userNameList;
-
-                    for(var i=0; i < jsonLoadUsers.length; i++){
-                        var obj = jsonLoadFiles[i];
-                        userNameList.append( obj["username"]+"  ");
-
-                    }
-                    alert(userNameList);
+                    userList= jsonLoadUsers;
                 }
             });
+        }
+
+        function saveFileKey(enKey,data,fileName){
+            var filename = fileName.replace(/\.encrypted$/,'');
+            var MasterKey = "hasithaKey";
+            var decryptedFileKey = Aes.Ctr.decrypt(enKey,MasterKey,256);
+            console.log("decrypted file key:"+decryptedFileKey);
+            alert(decryptedFileKey);
+            var decryptedData = Aes.Ctr.decrypt(data,decryptedFileKey,256);
+            alert(decryptedData);
+            var blob = new Blob([decryptedData], {type: "text/plain;charset=utf-8"});
+            saveAs(blob, filename);
+        }
+
+        function readFile(filename){
+            $.ajax({
+                url:'getFile.html',
+                type:"GET",
+                contentType: "application/json; charset=utf-8",
+                data: "filename=" +filename, //Stringified Json Object
+                async: false, //Cross-domain requests and dataType: "jsonp" requests do not support synchronous operation
+                cache: false, //This will force requested pages not to be cached by the browser
+                processData:false, //To avoid making query String instead of JSON
+                success: function(data){
+                    var json = JSON.parse(data);
+                    saveFileKey(json["encryptedKey"],json["fileContent"],filename);
+                }});
+        }
+
+        function getShareFile(){
+
+            $.ajax({
+                url:'getFile.html',
+                type:"GET",
+                contentType: "application/json; charset=utf-8",
+                data: "username=" +filename, //Stringified Json Object
+                async: false,    //Cross-domain requests and dataType: "jsonp" requests do not support synchronous operation
+                cache: false,    //This will force requested pages not to be cached by the browser
+                processData:false, //To avoid making query String instead of JSON
+                success: function(data){
+                    alert(data);
+                }});
         }
 
     </script>
@@ -207,7 +294,7 @@
         <div class="collapse navbar-collapse navbar-ex1-collapse">
             <ul class="nav navbar-nav side-nav">
                 <li>
-                    <input name="password-file" id="password-encrpt" value="1234" type="text" hidden="hidden">
+                    <%--<input name="password-file" id="password-encrpt" value="1234" type="text" hidden="hidden">--%>
                         <span class="btn btn-default btn-file">
                             Upload
                             <input name="src-file" id="src-file" onchange="encryptFile(this.files[0])" type="file">
@@ -215,7 +302,7 @@
 
                 </li>
                 <li class="active">
-                    <a href="javascript:readFile()"><i class="fa fa-fw fa-dashboard"></i> My Files</a>
+                    <a href="javascript:redFile()"><i class="fa fa-fw fa-dashboard"></i> My Files</a>
                 </li>
                 <li>
                     <a href="javascript:getAllUsers()"><i class="fa fa-fw fa-bar-chart-o"></i> Shared</a>
@@ -253,6 +340,7 @@
         <%--</tr>--%>
     </table>
     </div>
+            <div id="sharePopUp" title="Share File" style="width: 200px; height: 200px" hidden="hidden">
     <%--<div>--%>
         <%--<a href="#" class="btn btn-info btn-lg"><span class="fa fa-download"></span> Search</a>--%>
     <%--</div>--%>

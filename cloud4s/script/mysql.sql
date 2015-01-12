@@ -21,6 +21,12 @@ CREATE  TABLE shared (
   link varchar(70) NOT NULL,
   PRIMARY KEY (username));
 
+CREATE  TABLE files (
+  username VARCHAR(45) NOT NULL ,
+  filename VARCHAR(100) NOT NULL ,
+  filekey VARCHAR(200) NOT NULL ,
+  PRIMARY KEY (username,filename));
+
 INSERT INTO users(username,password,enabled,email,publickey)
 VALUES('alex', '123456', 1, 'sd@reaasdssa.com','alex'),
 ('harshika', 'joka', 1, 'hdranaweera@gmail.com','harshika'),

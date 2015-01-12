@@ -13,14 +13,16 @@ public class Shared {
     private String username;
     private String filename;
     private String link;
+    private String filekey;
 
     public Shared() {
     }
 
-    public Shared(String username, String filename, String link) {
+    public Shared(String username, String filename, String link, String filekey) {
         this.username = username;
         this.filename = filename;
         this.link    = link;
+        this.filekey = filekey;
 
     }
 
@@ -50,5 +52,14 @@ public class Shared {
 
     public void setlink(String link) {
         this.link = link;
+    }
+
+    @Column(name = "filekey", nullable = false, length = 255)
+    public String getfilekey() {
+        return this.filekey;
+    }
+
+    public void setfilekey(String filekey) {
+        this.filekey = filekey;
     }
 }

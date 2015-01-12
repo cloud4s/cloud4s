@@ -21,8 +21,8 @@ public class shareApiImpl implements shareApi {
     private SharedDao sharedDao;
 
     @Override
-    public  void shareLink(String username, String filename, String link){
-            sharedDao.saveLink(username, filename, link);
+    public  void shareLink(String username, String filename, String link, String filekey){
+            sharedDao.saveLink(username, filename, link, filekey);
     }
     @Override
     public List<Shared> getAllShareLink( String username){
