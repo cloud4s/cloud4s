@@ -135,6 +135,14 @@
 
             $(function() {
                 var popup = $( "#sharePopUp" );
+                var alertPopup = $('#shareSuccess');
+                alertPopup.dialog({
+                    autoOpen: false,
+                    hide: "scale",
+                    show : "scale",
+                    height: 200,
+                    width:300
+                });
                 popup.dialog({
                     autoOpen: false,
                     modal: true,
@@ -142,16 +150,20 @@
                         "Share": function() {
                             var list = $('#emailList').val();
                             $.ajax({
-                                type : "Post",
-                                url : "shareFile",
+                                type : "GET",
+                                url : "/shareFile",
+                                dataType : "json",
+                                cache : false ,
+                                contentType : 'application/json; charset=utf-8',
                                 data : "filename=" + values[0] + "&to=" + list,
                                 success : function() {
                                     $('#emailList').val("");
                                     $('#currentEmail').val("");
-                                    $( this ).dialog( "close" );
+                                    popup.dialog( "close" );
+                                    alertPopup.dialog("open");
                                 },
                                 error : function(e) {
-                                    alert('Error: ' + e);
+                                    alert(JSON.stringify(e));
                                 }
                             });
                         },
@@ -332,7 +344,7 @@
     </div>
 
     <%--share popup--%>
-    <div id="sharePopUp" title="Share File" style="width: 200px; height: 200px" hidden="hidden">
+    <div id="sharePopUp" title="Share File" hidden="hidden">
         <div class="row">
             <label>E-mail</label>
             <input id="currentEmail" type="text"/>
@@ -342,6 +354,9 @@
         <div class="row">
             <textarea id="emailList" style="resize: vertical; width: 90%" readonly></textarea>
         </div>
+    </div>
+    <div id="shareSuccess" title="Success"  hidden="hidden">
+
     </div>
 
 </div>
@@ -368,8 +383,6 @@
                 $('#emailValidation').show();
             }
         });
-
-        $(window).scroll(function() { $('#sharePopUp').center(); });
     });
     function IsEmail(email) {
         var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;

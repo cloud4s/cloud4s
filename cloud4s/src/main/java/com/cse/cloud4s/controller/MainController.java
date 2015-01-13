@@ -28,12 +28,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import java.io.*;
 import java.util.List;
+import java.util.Properties;
 import java.util.jar.JarException;
+
 
 @Controller
 public class MainController {
@@ -164,22 +166,26 @@ public class MainController {
         return model;
     }
 
-    @RequestMapping(value = { "/shareFile**" }, method = RequestMethod.POST)
-    public boolean shareFile( @ModelAttribute("filename")String filename,
-                              @ModelAttribute("to")String to, BindingResult result) {
+    @RequestMapping(value = { "/shareFile**" }, method = RequestMethod.GET)
+    @ResponseBody
+    public String shareFile( @ModelAttribute("filename")String filename, @ModelAttribute("to")String to) {
 
+        JSONObject results= new JSONObject();
         try {
+
             String [] toArray = to.split("; ");
             System.out.print(toArray);
             if (sendMail(toArray)){
-                return true;
+                results.put("msg","success");
             }
             else{
-                return false;
+                results.put("msg","error");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+            return results.toString();
+        }
+        catch (Exception e) {
+            results.put("msg", "error");
+            return results.toString();
         }
     }
 
@@ -391,8 +397,34 @@ public class MainController {
 
     public boolean sendMail(String[] to)
     {
-        try
-        {
+        final String username = "cloud4s.cse@gmail.com";
+        final String password = "cloud4s@cse";
+
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587");
+
+        Session session = Session.getInstance(props,
+                new javax.mail.Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(username, password);
+                    }
+                });
+
+        try {
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress("cloud4s.cse@gmail.com"));
+            InternetAddress[] recipientAddress = new InternetAddress[to.length];
+            for (int i=0; i<to.length; i++){
+                recipientAddress[i] = new InternetAddress(to[i]);
+            }
+            message.setRecipients(Message.RecipientType.TO, recipientAddress);
+            message.setSubject("Cloud4s File Sharing");
+            message.setText("A file is shared with you..!");
+
+            Transport.send(message);
             return true;
         }
         catch (Exception ex)
