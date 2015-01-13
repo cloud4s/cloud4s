@@ -3,9 +3,9 @@ package com.cse.cloud4s.controller;
 /**
  * Created by hp on 12/3/2014.
  */
+
 import com.cse.cloud4s.dao.UserDao;
 import com.cse.cloud4s.model.Shared;
-import com.cse.cloud4s.model.User;
 import com.cse.cloud4s.service.DropBoxApi;
 import com.cse.cloud4s.service.FileKeyApi;
 import com.cse.cloud4s.service.JsonResponse;
@@ -28,8 +28,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -123,29 +121,6 @@ public class MainController {
         }
     }
 
-//    @RequestMapping(value = { "/upload" }, method = RequestMethod.POST)
-//    public @ResponseBody
-//    ModelAndView uploadPage(@ModelAttribute("fileName")String filename, HttpServletRequest request, HttpServletResponse response) {
-//
-//        ModelAndView model = new ModelAndView();
-//        String LocalPath="C:/Users/hp/Downloads/"+filename;
-//        String DropboxPath="/"+filename;
-//
-//        try {
-//            Thread.sleep(5000);// have to remove wih proper mechanism
-//            dropboxapi.uploadFile(client,LocalPath,DropboxPath);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } catch (DbxException e) {
-//            e.printStackTrace();
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//
-//        model.setViewName("dashboard");
-//        return model;
-//    }
-//
     @RequestMapping(value = { "/upload" }, method = RequestMethod.GET)
     public ModelAndView uploadPage(@ModelAttribute("fileName")String filename,
                                    BindingResult result) {
@@ -185,11 +160,27 @@ public class MainController {
         } catch (DbxException e) {
             e.printStackTrace();
         }
-
-
-
         model.setViewName("dashboard");
         return model;
+    }
+
+    @RequestMapping(value = { "/shareFile**" }, method = RequestMethod.POST)
+    public boolean shareFile( @ModelAttribute("filename")String filename,
+                              @ModelAttribute("to")String to, BindingResult result) {
+
+        try {
+            String [] toArray = to.split("; ");
+            System.out.print(toArray);
+            if (sendMail(toArray)){
+                return true;
+            }
+            else{
+                return false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @RequestMapping(value = { "/getShare**" }, method = RequestMethod.GET)
@@ -284,33 +275,9 @@ public class MainController {
         return model;
     }
 
-//    @RequestMapping(value = { "/saveuser**" }, method = RequestMethod.POST)
-////    @RequestMapping(value =“/result”, method = RequestMethod.POST)
-//
-//    public ModelAndView saveUser(@ModelAttribute("inputName")String username,
-//                                 @ModelAttribute("inputEmail")String email,
-//                                 @ModelAttribute("inputPassword")String password,
-//                                 @ModelAttribute("inputKey")String masterkey,
-//                                 BindingResult result) {
-//
-//        ModelAndView model = new ModelAndView();
-//        userdao=new UserDaoImpl();
-//
-//        if(result.hasErrors()){
-//            model.setViewName("welcome");
-//            return model;
-//        }else{
-//            userdao.saveUser(username,password);
-//            model.setViewName("login");
-//            return model;
-//        }
-//
-//
-//    }
+
     @RequestMapping(value = { "/loadfiles**" }, method = RequestMethod.GET)
     @ResponseBody
-//    public DbxEntry.WithChildren loadFiles() {
-//    public JsonResponse loadFiles() {
     public String loadFiles() throws JarException{
         String note;
         DbxEntry.WithChildren list;
@@ -339,6 +306,7 @@ public class MainController {
     return results.toString();
 
 }
+
     @RequestMapping(value = { "/signup**" }, method = RequestMethod.GET)
     public ModelAndView signup() {
 
@@ -421,6 +389,16 @@ public class MainController {
         fileKeyApiApi.saveFileKey(fileKey);
     }
 
-
+    public boolean sendMail(String[] to)
+    {
+        try
+        {
+            return true;
+        }
+        catch (Exception ex)
+        {
+            return false;
+        }
+    }
 
 }

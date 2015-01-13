@@ -15,19 +15,13 @@
 
     <title>DashBoard - Cloud4s</title>
 
-    <link href='<c:url value="/css/main.css" />' rel="stylesheet" type="text/css"/>
-    <link href='<c:url value="/css/bootstrap.min.css" />' rel="stylesheet" type="text/css"/>
-    <%--<link href='<c:url value="/css/bootstrap-theme.min.css" />' rel="stylesheet" type="text/css"/>--%>
-    <%--<link href='<c:url value="/css/bootstrap.icon-large.min.css" />' rel="stylesheet" type="text/css"/>--%>
-    <%--<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">--%>
-    <link href='<c:url value="/fonts/css/font-awesome.min.css" />' rel="stylesheet" type="text/css"/>
     <link href='<c:url value="/css/dashboard.css" />' rel="stylesheet" type="text/css"/>
+    <link href='<c:url value="/css/jquery-ui.css" />' rel="stylesheet" type="text/css"/>
+    <link href='<c:url value="/css/jquery-ui.theme.css" />' rel="stylesheet" type="text/css"/>
 
-    <%--<script src='<c:url value="/js/jquery.js" />' type="text/javascript"></script>--%>
     <script src="js/main.js"></script>
 
     <!--AES sripts-->
-    <%--<script src="js/aes/jquery.js"></script>--%>
     <script src="js/aes/aes.js"></script>
     <script src="js/aes/aes-ctr.js"></script>
     <script src="js/aes/aes-ctr-file.js"></script>
@@ -136,14 +130,8 @@
         }
 
         function share(id) {
+            $('#emailValidation').hide();
             var values = (document.getElementById(id).value).split(",");
-            getAllUsers();
-            var usersList = userList;
-            var popupHTML = "";
-            for(var user in usersList){
-                popupHTML += "<label>"+JSON.stringify(user)+"</label>"
-            }
-            $("#sharePopUp").html(popupHTML);
 
             $(function() {
                 var popup = $( "#sharePopUp" );
@@ -152,20 +140,32 @@
                     modal: true,
                     buttons: {
                         "Share": function() {
-                            //shareFile();
+                            var list = $('#emailList').val();
+                            $.ajax({
+                                type : "Post",
+                                url : "shareFile",
+                                data : "filename=" + values[0] + "&to=" + list,
+                                success : function() {
+                                    $('#emailList').val("");
+                                    $('#currentEmail').val("");
+                                    $( this ).dialog( "close" );
+                                },
+                                error : function(e) {
+                                    alert('Error: ' + e);
+                                }
+                            });
                         },
                         "Cancel": function() {
+                            $('#emailList').val("");
+                            $('#currentEmail').val("");
                             $( this ).dialog( "close" );
                         }
                     },
-                    hide: "puff",
+                    hide: "slide",
                     show : "slide",
                     height: 400,
                     width:500
                 });
-//                $( ".shareButton" ).click(function() {
-//                    popup.dialog( "open" )
-//                });
                 popup.dialog( "open" );
             });
 
@@ -320,12 +320,6 @@
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header"> My Files</h1>
-                    <%--<ol class="breadcrumb">--%>
-                        <%--&lt;%&ndash;<li class="active">&ndash;%&gt;--%>
-                            <%--&lt;%&ndash;<i class="fa fa-dashboard"></i> My Files&ndash;%&gt;--%>
-                        <%--&lt;%&ndash;</li>&ndash;%&gt;--%>
-                    <%--</ol>--%>
-
                 </div>
             </div>
         </div>
@@ -333,23 +327,55 @@
     <%--list display--%>
     <div class="table-responsive">
     <table id="table" name="table" class="table table-hover table-striped table-condensed">
-        <%--<tr>--%>
-            <%--<td>Name</td>--%>
-            <%--<td>Icon</td>--%>
-            <%--<td>Path</td>--%>
-        <%--</tr>--%>
+
     </table>
     </div>
-            <div id="sharePopUp" title="Share File" style="width: 200px; height: 200px" hidden="hidden">
-    <%--<div>--%>
-        <%--<a href="#" class="btn btn-info btn-lg"><span class="fa fa-download"></span> Search</a>--%>
-    <%--</div>--%>
-    <%----%>
-</div>
+
+    <%--share popup--%>
+    <div id="sharePopUp" title="Share File" style="width: 200px; height: 200px" hidden="hidden">
+        <div class="row">
+            <label>E-mail</label>
+            <input id="currentEmail" type="text"/>
+            <button id="addEmail">Add</button>
+        </div>
+        <div hidden="hidden" id="emailValidation">Not an Email</div>
+        <div class="row">
+            <textarea id="emailList" style="resize: vertical; width: 90%" readonly></textarea>
+        </div>
+    </div>
 
 </div>
 <%--Footer--%>
 <jsp:include page="footer.jsp" />
+
+<script>
+    $(document).ready(function(){
+        var emailList = $('#emailList');
+        $('#addEmail').click(function(){
+            var currentEmail = $('#currentEmail');
+            if(IsEmail(currentEmail.val())){
+                $('#emailValidation').hide();
+                var list = emailList.val();
+                if(list==""){
+                    emailList.val(currentEmail.val()); //updated email list
+                }
+                else{
+                    emailList.val(list+"; "+currentEmail.val()); //updated email list
+                }
+                currentEmail.val(""); //resetting email entering field
+            }
+            else{
+                $('#emailValidation').show();
+            }
+        });
+
+        $(window).scroll(function() { $('#sharePopUp').center(); });
+    });
+    function IsEmail(email) {
+        var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+        return regex.test(email);
+    }
+</script>
 
 </body>
 
