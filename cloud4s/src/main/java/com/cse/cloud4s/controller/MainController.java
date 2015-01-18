@@ -87,7 +87,6 @@ public class MainController {
         ModelAndView model = new ModelAndView();
         try {
             dropboxapi.connect();
-            LOG.info("created connnection to dropbox");
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -96,11 +95,10 @@ public class MainController {
         }
         model.setViewName("dropbox");
         return model;
-
     }
 
     @RequestMapping(value = { "/dash" }, method = RequestMethod.GET)
-    public ModelAndView dashboardPage(@ModelAttribute("inputkey")String code, BindingResult result) {
+    public ModelAndView dashboardPage(@ModelAttribute("code")String code, BindingResult result) {
 
         ModelAndView model = new ModelAndView();
 
@@ -110,8 +108,6 @@ public class MainController {
         } else {
             try {
                 client=dropboxapi.verify(code);
-//                dropboxapi.uploadFile(client,"C:/Users/hp/Downloads/dashboard.jsp","/dashboard.jsp");
-//                dropboxapi.loadfiles(client);
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (DbxException e) {

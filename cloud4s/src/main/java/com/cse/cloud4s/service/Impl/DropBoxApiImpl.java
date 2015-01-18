@@ -24,13 +24,12 @@ public class DropBoxApiImpl implements DropBoxApi {
 //    public DbxWebAuthNoRedirect connect() throws IOException,DbxException {         //connect to dropbox .returns object of DbxClient.APP_KEY and APP_SECRET should be developers one.
     public void connect() throws IOException,DbxException {         //connect to dropbox .returns object of DbxClient.APP_KEY and APP_SECRET should be developers one.
 
-        final String APP_KEY = "fs8foggwxwv107a";
-        final String APP_SECRET = "r1xnydvhr3m6l55";
+        final String APP_KEY = "uthwboamsw1alja";
+        final String APP_SECRET = "izzrpf8qfw0veqw";
 
         DbxAppInfo appInfo = new DbxAppInfo(APP_KEY, APP_SECRET);
 
-      this.config = new DbxRequestConfig("JavaTutorial/1.0",
-                Locale.getDefault().toString());
+      this.config = new DbxRequestConfig("JavaTutorial/1.0",Locale.getDefault().toString());
 
         DbxWebAuthNoRedirect webAuth = new DbxWebAuthNoRedirect(config, appInfo);
 
