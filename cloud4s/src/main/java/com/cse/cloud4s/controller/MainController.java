@@ -87,6 +87,7 @@ public class MainController {
         ModelAndView model = new ModelAndView();
         try {
             dropboxapi.connect();
+            LOG.info("created connnection to dropbox");
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -95,10 +96,11 @@ public class MainController {
         }
         model.setViewName("dropbox");
         return model;
+
     }
 
     @RequestMapping(value = { "/dash" }, method = RequestMethod.GET)
-    public ModelAndView dashboardPage(@ModelAttribute("code")String code, BindingResult result) {
+    public ModelAndView dashboardPage(@ModelAttribute("inputkey")String code, BindingResult result) {
 
         ModelAndView model = new ModelAndView();
 
@@ -108,6 +110,8 @@ public class MainController {
         } else {
             try {
                 client=dropboxapi.verify(code);
+//                dropboxapi.uploadFile(client,"C:/Users/hp/Downloads/dashboard.jsp","/dashboard.jsp");
+//                dropboxapi.loadfiles(client);
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (DbxException e) {
@@ -124,7 +128,7 @@ public class MainController {
                                    BindingResult result) {
 
         ModelAndView model = new ModelAndView();
-        String LocalPath="C:/Users/hp/Downloads/";
+        String LocalPath="/home/hasitha/Downloads/";
 //        String DropboxPath="/"+filename;
 
         try {
@@ -164,14 +168,17 @@ public class MainController {
 
     @RequestMapping(value = { "/shareFile**" }, method = RequestMethod.GET)
     @ResponseBody
-    public String shareFile( @ModelAttribute("filename")String filename, @ModelAttribute("to")String to) {
+    public String shareFile( @ModelAttribute("filename")String filename,
+                             @ModelAttribute("to")String to,
+                             @ModelAttribute("defileKey")String defileKey,
+                             @ModelAttribute("path")String path) {
 
         JSONObject results= new JSONObject();
         try {
 
             String [] toArray = to.split("; ");
             System.out.print(toArray);
-            if (sendMail(toArray)){
+            if (sendMail(toArray,filename,defileKey,path)){
                 results.put("msg","success");
             }
             else{
@@ -221,7 +228,7 @@ public class MainController {
         int i = 0;
         JSONArray listArray = new JSONArray();
         JSONObject results = new JSONObject();
-        File file = new File("C:/Users/hp/Downloads/"+filename);
+        File file = new File("/home/hasitha/Downloads/"+filename);
         FileInputStream fin = null;
         try {
             // create FileInputStream object
@@ -391,11 +398,40 @@ public class MainController {
         fileKeyApiApi.saveFileKey(fileKey);
     }
 
-    public boolean sendMail(String[] to)
+    //Share files with external users.
+    @RequestMapping(value = { "/shareToOut" }, method = RequestMethod.GET)
+    @ResponseBody
+    public String shareDataToOut(@ModelAttribute("fileName")String fileName,
+                                    @ModelAttribute("filePath")String filePath,
+                                    @ModelAttribute("userName")String userName) {
+        //file path is get it can be usefull when generating dropbox link
+        StringWriter out = new StringWriter();
+
+        try {
+            String fileKey = fileKeyApiApi.getFileKey(fileName,userName);
+            JSONObject obj=new JSONObject();
+            obj.put("filekey",new String(fileKey));
+            obj.writeJSONString(out);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String jsonText = out.toString();
+        System.out.println(jsonText);
+        return  jsonText;
+    }
+
+    public boolean sendMail(String[] to,String filename,String defileKey,String path)
     {
         final String username = "cloud4s.cse@gmail.com";
         final String password = "cloud4s@cse";
-
+        String Url_old= null;
+        try {
+            Url_old = client.createShareableUrl(path);
+        } catch (DbxException e) {
+            e.printStackTrace();
+        }
+        String Url = Url_old.substring(0, Url_old.length() - 1)+"1";
+        String content = "Go to this link: "+Url+"$$"+defileKey;
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
@@ -413,8 +449,8 @@ public class MainController {
             Message message = new MimeMessage(session);
             InternetAddress[] recipientAddress = new InternetAddress[to.length];
 
-            message.setSubject("Cloud4s File Sharing");
-            message.setText("A file is shared with you..!");
+            message.setSubject("Shared file "+filename);
+            message.setText(content);
 
             for (int i=0; i<to.length; i++){
                 recipientAddress[i] = new InternetAddress(to[i]);
