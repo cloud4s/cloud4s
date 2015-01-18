@@ -36,6 +36,7 @@ public class DropBoxApiImpl implements DropBoxApi {
 
         // Have the user sign in and authorize your app.
         String authorizeUrl = webAuth.start();
+        authorizeUrl += "&redirect_uri=http://localhost:8080/dash";
         System.out.println("1. Go to: " + authorizeUrl);
         System.out.println("2. Click \"Allow\" (you might have to log in first)");
         System.out.println("3. Copy the authorization code.");

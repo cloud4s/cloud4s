@@ -415,16 +415,17 @@ public class MainController {
 
         try {
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("cloud4s.cse@gmail.com"));
             InternetAddress[] recipientAddress = new InternetAddress[to.length];
-            for (int i=0; i<to.length; i++){
-                recipientAddress[i] = new InternetAddress(to[i]);
-            }
-            message.setRecipients(Message.RecipientType.TO, recipientAddress);
+
             message.setSubject("Cloud4s File Sharing");
             message.setText("A file is shared with you..!");
 
-            Transport.send(message);
+            for (int i=0; i<to.length; i++){
+                recipientAddress[i] = new InternetAddress(to[i]);
+                message.setRecipient(Message.RecipientType.TO, recipientAddress[i]);
+                Transport.send(message);
+            }
+
             return true;
         }
         catch (Exception ex)

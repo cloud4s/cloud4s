@@ -135,7 +135,7 @@
 
             $(function() {
                 var popup = $( "#sharePopUp" );
-                var alertPopup = $('#shareSuccess');
+                var alertPopup = $('#alertPopup');
                 alertPopup.dialog({
                     autoOpen: false,
                     hide: "scale",
@@ -159,13 +159,15 @@
                                 success : function() {
                                     $('#emailList').val("");
                                     $('#currentEmail').val("");
-                                    popup.dialog( "close" );
+                                    alertPopup.prop('title', 'Success :)');
                                     alertPopup.dialog("open");
                                 },
                                 error : function(e) {
-                                    alert(JSON.stringify(e));
+                                    alertPopup.prop('title', 'Error :(');
+                                    alertPopup.dialog("open");
                                 }
                             });
+                            popup.dialog( "close" );
                         },
                         "Cancel": function() {
                             $('#emailList').val("");
@@ -346,16 +348,17 @@
     <%--share popup--%>
     <div id="sharePopUp" title="Share File" hidden="hidden">
         <div class="row">
-            <label>E-mail</label>
-            <input id="currentEmail" type="text"/>
-            <button id="addEmail">Add</button>
+            <div class="col-lg-2"><label>E-mail</label>                 </div>
+            <div class="col-lg-8"><input id="currentEmail" type="text" style="width: 100%; height: 30px;"/></div>
+            <div class="col-lg-2"><button id="addEmail">Add</button>    </div>
         </div>
         <div hidden="hidden" id="emailValidation">Not an Email</div>
+        <br>
         <div class="row">
-            <textarea id="emailList" style="resize: vertical; width: 90%" readonly></textarea>
+            <textarea id="emailList" style="position: absolute; width: 94%; left: 3%;  min-height: 150px;" readonly></textarea>
         </div>
     </div>
-    <div id="shareSuccess" title="Success"  hidden="hidden">
+    <div id="alertPopup"  hidden="hidden">
 
     </div>
 

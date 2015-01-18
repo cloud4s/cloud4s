@@ -80,12 +80,15 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/#" style="color: #ffffff"><img src="/img/cloud_globe.png" style="height: 60px; margin-top: -10px;"></a>
+            <a class="navbar-brand" href="/#" style="color: #ffffff"><img src="/img/cloud_globe.png" style="height: 60px; margin-top: -15px;"></a>
         </div>
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav navbar-right" style="color: #ffffff">
+            <ul class="nav navbar-nav navbar-right navbar-custom">
 
+                <li style="display:${pageContext.request.userPrincipal.name == null ? 'none' : 'block'};">
+                    <a href="/dash">DashBoard</a>
+                </li>
                 <li id="serviceTab">
                     <a href="/#secA">Services</a>
                 </li>
