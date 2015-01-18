@@ -391,6 +391,13 @@ public class MainController {
         fileKeyApiApi.saveFileKey(fileKey);
     }
 
+    @RequestMapping(value = { "/publicShare**" }, method = RequestMethod.GET)
+    public void publicShare(@ModelAttribute("enKey")String fileUrl,
+                          @ModelAttribute("fileName")String key )
+    {
+        System.out.print("");
+    }
+
     public boolean sendMail(String[] to)
     {
         final String username = "cloud4s.cse@gmail.com";
