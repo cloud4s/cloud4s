@@ -34,6 +34,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.Statement;
 import java.util.List;
 import java.util.jar.JarException;
 
@@ -383,6 +386,31 @@ public class MainController {
     public ModelAndView popup() {
 
         ModelAndView model = new ModelAndView();
+
+        Connection connection = null;
+        String dburl = "jdbc:mysql://192.248.15.169:3306/cloud4s";
+        String userName = "root";
+        String passWord = "sameera";
+
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+
+            connection = DriverManager.getConnection(dburl, userName, passWord);
+            Statement st = connection.createStatement();
+
+            String query = "INSERT INTO Example (`TestColumn`) VALUES('hello')";
+            int rsI = st.executeUpdate(query);
+            System.out.println("Hi");
+        }catch (Exception e) {
+            System.out.println(e);
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                    System.out.println("Database connection terminated");
+                } catch (Exception e) { /* ignore close errors */ }
+            }
+        }
 
         model.setViewName("popupform");
 
