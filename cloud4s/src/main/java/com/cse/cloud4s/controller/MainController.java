@@ -431,7 +431,7 @@ public class MainController {
             e.printStackTrace();
         }
         String Url = Url_old.substring(0, Url_old.length() - 1)+"1";
-        String content = "Go to this link: "+Url+"$$"+defileKey;
+        String content = "Go to this link: "+Url+"&key="+defileKey;
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");

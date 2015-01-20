@@ -150,12 +150,14 @@
                     buttons: {
                         "Share": function() {
                             var list = $('#emailList').val();
-                            shareToOut(fileName,filePath,list)
+                            var pubKey = $('#recPubKey').val();
+                            shareToOut(fileName,filePath,list,pubKey)
                             popup.dialog( "close" );
                         },
                         "Cancel": function() {
                             $('#emailList').val("");
                             $('#currentEmail').val("");
+                            $('#recPubKey').val("");
                             $( this ).dialog( "close" );
                         }
                     },
@@ -170,7 +172,7 @@
         }
 
         //Share files with external users.
-        function shareToOut(fileName,filePath,list){
+        function shareToOut(fileName,filePath,list,pubKey){
             var MasterKey = "hasithaKey";
             var userName = "${pageContext.request.userPrincipal.name}";
             $.ajax({
@@ -184,8 +186,10 @@
                     var jsonObj = response;
                     console.log("file key: "+jsonObj["filekey"]);
                     var decryptedFileKey = Aes.Ctr.decrypt(jsonObj["filekey"],MasterKey,256);
+                    var reencryptedFileKey = Aes.Ctr.encrypt(decryptedFileKey,pubKey,256);
                     console.log("decrypted file key: "+decryptedFileKey);
-                    sendMails(fileName,decryptedFileKey,list,filePath);
+                    console.log("renecrypted file key: "+reencryptedFileKey);
+                    sendMails(fileName,reencryptedFileKey,list,filePath);
                 },
                 error : function(e) {
                     alert('Error: ' + e);
@@ -194,7 +198,7 @@
         }
 
         //send mails to external users.
-        function sendMails(fileName,decryptedFileKey,mailList,path){
+        function sendMails(fileName,reencryptedFileKey,mailList,path){
             var alertPopup = $('#alertPopup');
             $.ajax({
                 type : "GET",
@@ -202,10 +206,11 @@
                 dataType : "json",
                 cache : false ,
                 contentType : 'application/json; charset=utf-8',
-                data : "filename=" + fileName + "&to=" + mailList+"&defileKey="+decryptedFileKey+"&path="+path,
+                data : "filename=" + fileName + "&to=" + mailList+"&defileKey="+reencryptedFileKey+"&path="+path,
                 success : function() {
                     $('#emailList').val("");
                     $('#currentEmail').val("");
+                    $('#recPubKey').val("");
                     alertPopup.prop('title', 'Success :)');
                     alertPopup.dialog("open");
                 },
@@ -280,17 +285,21 @@
             });
         }
 
-//        function saveFileKey(enKey,data,fileName){
-//            var filename = fileName.replace(/\.encrypted$/,'');
-//            var MasterKey = "hasithaKey";
-//            var decryptedFileKey = Aes.Ctr.decrypt(enKey,MasterKey,256);
-//            console.log("decrypted file key:"+decryptedFileKey);
-//            alert(decryptedFileKey);
-//            var decryptedData = Aes.Ctr.decrypt(data,decryptedFileKey,256);
-//            alert(decryptedData);
-//            var blob = new Blob([decryptedData], {type: "text/plain;charset=utf-8"});
-//            saveAs(blob, filename);
-//        }
+        function saveFile(enKey,data,fileName){
+            var filename = fileName.replace(/\.encrypted$/,'');
+            var MasterKey = "hasithaKey";
+            var decryptedFileKey = Aes.Ctr.decrypt(enKey,MasterKey,256);
+            console.log("decrypted file key:"+decryptedFileKey);
+            alert(decryptedFileKey);
+            var decryptedData = Aes.Ctr.decrypt(data,decryptedFileKey,256);
+            // convert single-byte character stream to ArrayBuffer bytestream
+            var contentBytes = new Uint8Array(decryptedData.length);
+            for (var i=0; i<decryptedData.length; i++) {
+                contentBytes[i] = decryptedData.charCodeAt(i);
+            }
+            var blob = new Blob([contentBytes], { type: 'application/octet-stream' });
+            saveAs(blob, filename);
+        }
 
         function readFile(filename){
             $.ajax({
@@ -303,24 +312,24 @@
                 processData:false, //To avoid making query String instead of JSON
                 success: function(data){
                     var json = JSON.parse(data);
-                    saveFileKey(json["encryptedKey"],json["fileContent"],filename);
+                    saveFile(json["encryptedKey"],json["fileContent"],filename);
                 }});
         }
 
-        function getShareFile(){
-
-            $.ajax({
-                url:'getFile.html',
-                type:"GET",
-                contentType: "application/json; charset=utf-8",
-                data: "username=" +filename, //Stringified Json Object
-                async: false,    //Cross-domain requests and dataType: "jsonp" requests do not support synchronous operation
-                cache: false,    //This will force requested pages not to be cached by the browser
-                processData:false, //To avoid making query String instead of JSON
-                success: function(data){
-                    alert(data);
-                }});
-        }
+//        function getShareFile(){
+//
+//            $.ajax({
+//                url:'getFile.html',
+//                type:"GET",
+//                contentType: "application/json; charset=utf-8",
+//                data: "username=" +filename, //Stringified Json Object
+//                async: false,    //Cross-domain requests and dataType: "jsonp" requests do not support synchronous operation
+//                cache: false,    //This will force requested pages not to be cached by the browser
+//                processData:false, //To avoid making query String instead of JSON
+//                success: function(data){
+//                    alert(data);
+//                }});
+//        }
 
     </script>
 
@@ -379,19 +388,21 @@
     <%--share popup--%>
     <div id="sharePopUp" title="Share File" hidden="hidden">
         <div class="row">
-            <div class="col-lg-2"><label>E-mail</label>                 </div>
+            <div class="col-lg-2"><label>E-mail</label></div>
             <div class="col-lg-8"><input id="currentEmail" type="text" style="width: 100%; height: 30px;"/></div>
-            <div class="col-lg-2"><button id="addEmail">Add</button>    </div>
+            <div class="col-lg-2"><button id="addEmail">Add</button></div>
         </div>
         <div hidden="hidden" id="emailValidation">Not an Email</div>
         <br>
         <div class="row">
-            <textarea id="emailList" style="position: absolute; width: 94%; left: 3%;  min-height: 150px;" readonly></textarea>
+            <textarea id="emailList" style="position: unset; width: 100%; left: 3%;  min-height: 150px;" readonly></textarea>
+        </div>
+        <div class="row">
+            <div class="col-lg-4"><label>Receiver's Public Key:</label></div>
+            <div class="col-lg-8"><textarea id="recPubKey" placeholder="Public key"></textarea></div>
         </div>
     </div>
-    <div id="alertPopup"  hidden="hidden">
-
-    </div>
+    <div id="alertPopup" title=""  hidden="hidden"></div>
 
 </div>
 <%--Footer--%>
