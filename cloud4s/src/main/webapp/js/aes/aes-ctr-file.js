@@ -39,7 +39,8 @@ function encryptFile(file) {
     }
 }
 
-function decryptFile(file) {
+function decryptFile(file,Key) {
+    console.log("Start file decryption..");
     // use FileReader.ReadAsText to read (base64-encoded) ciphertext file
     var reader = new FileReader();
     reader.readAsText(file);
@@ -47,7 +48,7 @@ function decryptFile(file) {
         $('body').css({'cursor':'wait'});
 
         var content = reader.result; // ≡ evt.target.result
-        var password = $('#password-file').val();
+        var password = Key;
 
         var t1 = new Date();
         var plaintext = Aes.Ctr.decrypt(content, password, 256);

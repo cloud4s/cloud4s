@@ -25,8 +25,7 @@
     <link href='<c:url value="/css/bootstrap.min.css" />' rel="stylesheet" type="text/css"/>
     <link href='<c:url value="/fonts/css/font-awesome.min.css" />' rel="stylesheet" type="text/css"/>
 
-    <script src='<c:url value="/js/jquery.js" />' type="text/javascript"></script>
-    <script src='<c:url value="/js/jquery-ui.js" />' type="text/javascript"></script>
+
 
 
 </head>

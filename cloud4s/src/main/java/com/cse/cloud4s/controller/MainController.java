@@ -110,8 +110,6 @@ public class MainController {
         } else {
             try {
                 client=dropboxapi.verify(code);
-//                dropboxapi.uploadFile(client,"C:/Users/hp/Downloads/dashboard.jsp","/dashboard.jsp");
-//                dropboxapi.loadfiles(client);
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (DbxException e) {
@@ -129,8 +127,6 @@ public class MainController {
 
         ModelAndView model = new ModelAndView();
         String LocalPath="/home/hasitha/Downloads/";
-//        String DropboxPath="/"+filename;
-
         try {
             Thread.sleep(5000);// have to remove wih proper mechanism
             dropboxapi.uploadFile(client,filename,LocalPath);
@@ -141,7 +137,6 @@ public class MainController {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
         model.setViewName("dashboard");
         return model;
     }
@@ -154,7 +149,6 @@ public class MainController {
                                   BindingResult result) {
 
         ModelAndView model = new ModelAndView();
-
         try {
             String Url_old= client.createShareableUrl(path);
             String Url = Url_old.substring(0, Url_old.length() - 1)+"1";
@@ -217,7 +211,6 @@ public class MainController {
         results.put("sharedFiles",listArray);
         System.out.println( results.toString() );
         return results.toString();
-
     }
 
 
@@ -406,7 +399,6 @@ public class MainController {
                                     @ModelAttribute("userName")String userName) {
         //file path is get it can be usefull when generating dropbox link
         StringWriter out = new StringWriter();
-
         try {
             String fileKey = fileKeyApiApi.getFileKey(fileName,userName);
             JSONObject obj=new JSONObject();
@@ -420,8 +412,22 @@ public class MainController {
         return  jsonText;
     }
 
-    public boolean sendMail(String[] to,String filename,String defileKey,String path)
-    {
+    @RequestMapping(value = { "/publicShareDownload**" }, method = RequestMethod.GET)
+    public ModelAndView publicShareDownload(@ModelAttribute("fileUrl")String fileUrl,
+                                            @ModelAttribute("enFileKey")String enFileKey,
+                                            @ModelAttribute("fileName")String fileName) {
+
+        ModelAndView model = new ModelAndView();
+
+        model.addObject("fileName",fileName);
+        model.addObject("fileUrl",fileUrl);
+        model.addObject("enFileKey",enFileKey);
+
+        model.setViewName("pubShare");
+        return model;
+    }
+
+    public boolean sendMail(String[] to,String filename,String defileKey,String path) {
         final String username = "cloud4s.cse@gmail.com";
         final String password = "cloud4s@cse";
         String Url_old= null;
@@ -431,7 +437,9 @@ public class MainController {
             e.printStackTrace();
         }
         String Url = Url_old.substring(0, Url_old.length() - 1)+"1";
-        String content = "Go to this link: "+Url+"&key="+defileKey;
+        String content = "Go to this link: http://localhost:8080/publicShareDownload"
+                +"?fileUrl="+Url+"&enFileKey="+defileKey.replaceAll("\\s","").trim()+"&fileName="+filename;
+//        String content = "Go to this link: http://localhost:8080/publicShareDownload"+"?enFileKey="+defileKey+"&Url="+Url;
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");

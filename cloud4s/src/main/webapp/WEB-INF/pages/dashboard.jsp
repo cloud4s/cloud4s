@@ -11,7 +11,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="DashBoard for Cloud4s">
-    <meta name="author" content="Sameera">
+    <meta name="author" content="Cloud4S">
 
     <title>DashBoard - Cloud4s</title>
 
@@ -19,8 +19,8 @@
     <link href='<c:url value="/css/jquery-ui.css" />' rel="stylesheet" type="text/css"/>
     <link href='<c:url value="/css/jquery-ui.theme.css" />' rel="stylesheet" type="text/css"/>
 
-    <script src="js/main.js"></script>
-
+    <script src='<c:url value="/js/jquery.js" />' type="text/javascript"></script>
+    <script src='<c:url value="/js/jquery-ui.js" />' type="text/javascript"></script>
     <!--AES sripts-->
     <script src="js/aes/aes.js"></script>
     <script src="js/aes/aes-ctr.js"></script>
@@ -30,15 +30,16 @@
     <script src="js/aes/prettify.js"></script>
 
     <!--RSA scripts-->
-    <script src="js/rsa/aes.js"></script>
-    <script src="js/rsa/rsa.js"></script>
-    <script src="js/rsa/api.js"></script>
-    <script src="js/rsa/cryptico.js"></script>
-    <script src="js/rsa/cryptico.min.js"></script>
-    <script src="js/rsa/hash.js"></script>
-    <script src="js/rsa/jsbn.js"></script>
-    <script src="js/rsa/random.js"></script>
-    <script src="js/rsa/jsencrypt.js"></script>
+    <%--<script src="js/rsa/aes.js"></script>--%>
+    <%--<script src="js/rsa/rsa.js"></script>--%>
+    <%--<script src="js/rsa/api.js"></script>--%>
+    <%--<script src="js/rsa/cryptico.js"></script>--%>
+    <%--<script src="js/rsa/cryptico.min.js"></script>--%>
+    <%--<script src="js/rsa/hash.js"></script>--%>
+    <%--<script src="js/rsa/jsbn.js"></script>--%>
+    <%--<script src="js/rsa/random.js"></script>--%>
+    <%--<script src="js/rsa/jsencrypt.js"></script>--%>
+    <script src="js/rsa/jsencrypt.min.js"></script>
 
     <script src="js/FileSaver.js"></script>
 
@@ -120,7 +121,6 @@
                 url : "download",
                 data : "filename=" + values[0] + "&path=" + values[1]+"&username="+username,
                 success : function(response) {
-//                    alert(values[0]+" successfully downloaded.");
                     readFile(values[0]);
                 },
                 error : function(e) {
@@ -150,7 +150,7 @@
                     buttons: {
                         "Share": function() {
                             var list = $('#emailList').val();
-                            var pubKey = $('#recPubKey').val();
+                            var pubKey = $('#recPubKey').val().replace(/\s+/g, '');
                             shareToOut(fileName,filePath,list,pubKey)
                             popup.dialog( "close" );
                         },
@@ -168,7 +168,6 @@
                 });
                 popup.dialog( "open" );
             });
-
         }
 
         //Share files with external users.
@@ -185,11 +184,18 @@
                 success : function(response) {
                     var jsonObj = response;
                     console.log("file key: "+jsonObj["filekey"]);
+
+                    //decrypt file key using Master key...
                     var decryptedFileKey = Aes.Ctr.decrypt(jsonObj["filekey"],MasterKey,256);
-                    var reencryptedFileKey = Aes.Ctr.encrypt(decryptedFileKey,pubKey,256);
+
+                    //re-encrypt file key with the public key...
+                    var encrypt = new JSEncrypt();
+                    encrypt.setPublicKey(pubKey);
+                    var reencryptedFileKey = encrypt.encrypt(decryptedFileKey);
                     console.log("decrypted file key: "+decryptedFileKey);
                     console.log("renecrypted file key: "+reencryptedFileKey);
-                    sendMails(fileName,reencryptedFileKey,list,filePath);
+
+                    sendMails(fileName,reencryptedFileKey.replace(/\s+/g, ''),list,filePath);
                 },
                 error : function(e) {
                     alert('Error: ' + e);
@@ -297,7 +303,7 @@
             for (var i=0; i<decryptedData.length; i++) {
                 contentBytes[i] = decryptedData.charCodeAt(i);
             }
-            var blob = new Blob([contentBytes], { type: 'application/octet-stream' });
+            var blob = new Blob([contentBytes], {type: 'application/octet-stream'});
             saveAs(blob, filename);
         }
 
@@ -316,20 +322,7 @@
                 }});
         }
 
-//        function getShareFile(){
-//
-//            $.ajax({
-//                url:'getFile.html',
-//                type:"GET",
-//                contentType: "application/json; charset=utf-8",
-//                data: "username=" +filename, //Stringified Json Object
-//                async: false,    //Cross-domain requests and dataType: "jsonp" requests do not support synchronous operation
-//                cache: false,    //This will force requested pages not to be cached by the browser
-//                processData:false, //To avoid making query String instead of JSON
-//                success: function(data){
-//                    alert(data);
-//                }});
-//        }
+
 
     </script>
 
