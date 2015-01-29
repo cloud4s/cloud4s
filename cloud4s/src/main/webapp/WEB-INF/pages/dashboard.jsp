@@ -15,19 +15,13 @@
 
     <title>DashBoard - Cloud4s</title>
 
-    <link href='<c:url value="/css/main.css" />' rel="stylesheet" type="text/css"/>
-    <link href='<c:url value="/css/bootstrap.min.css" />' rel="stylesheet" type="text/css"/>
-    <%--<link href='<c:url value="/css/bootstrap-theme.min.css" />' rel="stylesheet" type="text/css"/>--%>
-    <%--<link href='<c:url value="/css/bootstrap.icon-large.min.css" />' rel="stylesheet" type="text/css"/>--%>
-    <%--<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">--%>
-    <link href='<c:url value="/fonts/css/font-awesome.min.css" />' rel="stylesheet" type="text/css"/>
     <link href='<c:url value="/css/dashboard.css" />' rel="stylesheet" type="text/css"/>
+    <link href='<c:url value="/css/jquery-ui.css" />' rel="stylesheet" type="text/css"/>
+    <link href='<c:url value="/css/jquery-ui.theme.css" />' rel="stylesheet" type="text/css"/>
 
-    <%--<script src='<c:url value="/js/jquery.js" />' type="text/javascript"></script>--%>
     <script src="js/main.js"></script>
 
     <!--AES sripts-->
-    <%--<script src="js/aes/jquery.js"></script>--%>
     <script src="js/aes/aes.js"></script>
     <script src="js/aes/aes-ctr.js"></script>
     <script src="js/aes/aes-ctr-file.js"></script>
@@ -47,6 +41,8 @@
     <script src="js/rsa/jsencrypt.js"></script>
 
     <script src="js/FileSaver.js"></script>
+
+    <script src="/js/my-js.js"></script>
 
     <sec:authorize access="hasRole('ROLE_USER')">
         <!-- For login user -->
@@ -112,13 +108,15 @@
                     }
                     tableData += "</tbody>";
                     $("table").html(tableData);
+//                    ("#tablefiles").html(tableData);
+
                 }
             });
         }
 
 
         function download(id) {
-            var values = (document.getElementById(id).value).split(",");;
+            var values = (document.getElementById(id).value).split(",");
             console.log(values);
             var username = "${pageContext.request.userPrincipal.name}";
             $.ajax({
@@ -136,39 +134,95 @@
         }
 
         function share(id) {
+            $('#emailValidation').hide();
             var values = (document.getElementById(id).value).split(",");
-            getAllUsers();
-            var usersList = userList;
-            var popupHTML = "";
-            for(var user in usersList){
-                popupHTML += "<label>"+JSON.stringify(user)+"</label>"
-            }
-            $("#sharePopUp").html(popupHTML);
-
+            var fileName = values[0];
+            var filePath = values[1];
             $(function() {
                 var popup = $( "#sharePopUp" );
+                var alertPopup = $('#alertPopup');
+                alertPopup.dialog({
+                    autoOpen: false,
+                    hide: "scale",
+                    show : "scale",
+                    height: 200,
+                    width:300
+                });
                 popup.dialog({
                     autoOpen: false,
                     modal: true,
                     buttons: {
                         "Share": function() {
-                            //shareFile();
+                            var list = $('#emailList').val();
+                            var pubKey = $('#recPubKey').val();
+                            shareToOut(fileName,filePath,list,pubKey)
+                            popup.dialog( "close" );
                         },
                         "Cancel": function() {
+                            $('#emailList').val("");
+                            $('#currentEmail').val("");
+                            $('#recPubKey').val("");
                             $( this ).dialog( "close" );
                         }
                     },
-                    hide: "puff",
+                    hide: "slide",
                     show : "slide",
                     height: 400,
                     width:500
                 });
-//                $( ".shareButton" ).click(function() {
-//                    popup.dialog( "open" )
-//                });
                 popup.dialog( "open" );
             });
 
+        }
+
+        //Share files with external users.
+        function shareToOut(fileName,filePath,list,pubKey){
+            var MasterKey = "hasithaKey";
+            var userName = "${pageContext.request.userPrincipal.name}";
+            $.ajax({
+                type : "Get",
+                url : "shareToOut.html",
+                dataType : "json",
+                cache : false ,
+                contentType: "application/json; charset=UTF-8",
+                data : "fileName=" + fileName + "&filePath=" + filePath+"&userName="+userName,
+                success : function(response) {
+                    var jsonObj = response;
+                    console.log("file key: "+jsonObj["filekey"]);
+                    var decryptedFileKey = Aes.Ctr.decrypt(jsonObj["filekey"],MasterKey,256);
+                    var reencryptedFileKey = Aes.Ctr.encrypt(decryptedFileKey,pubKey,256);
+                    console.log("decrypted file key: "+decryptedFileKey);
+                    console.log("renecrypted file key: "+reencryptedFileKey);
+                    sendMails(fileName,reencryptedFileKey,list,filePath);
+                },
+                error : function(e) {
+                    alert('Error: ' + e);
+                }
+            });
+        }
+
+        //send mails to external users.
+        function sendMails(fileName,reencryptedFileKey,mailList,path){
+            var alertPopup = $('#alertPopup');
+            $.ajax({
+                type : "GET",
+                url : "/shareFile",
+                dataType : "json",
+                cache : false ,
+                contentType : 'application/json; charset=utf-8',
+                data : "filename=" + fileName + "&to=" + mailList+"&defileKey="+reencryptedFileKey+"&path="+path,
+                success : function() {
+                    $('#emailList').val("");
+                    $('#currentEmail').val("");
+                    $('#recPubKey').val("");
+                    alertPopup.prop('title', 'Success :)');
+                    alertPopup.dialog("open");
+                },
+                error : function(e) {
+                    alertPopup.prop('title', 'Error :(');
+                    alertPopup.dialog("open");
+                }
+            });
         }
 
         function decryptFile(file,key){
@@ -222,11 +276,11 @@
         function getAllUsers(){
             var data;
             $.ajax({
-                url : 'getAllUsers.html',
+                url : '/getAllUsers.html',
                 dataType : "json",
                 cache : false ,
                 contentType : 'application/json; charset=utf-8',
-                type : 'GET',
+                type : 'POST',
                 success : function(data) {
                     var jsonLoadUsers=data.users;
                     console.log(jsonLoadUsers);
@@ -235,15 +289,19 @@
             });
         }
 
-        function saveFileKey(enKey,data,fileName){
+        function saveFile(enKey,data,fileName){
             var filename = fileName.replace(/\.encrypted$/,'');
             var MasterKey = "hasithaKey";
             var decryptedFileKey = Aes.Ctr.decrypt(enKey,MasterKey,256);
             console.log("decrypted file key:"+decryptedFileKey);
             alert(decryptedFileKey);
             var decryptedData = Aes.Ctr.decrypt(data,decryptedFileKey,256);
-            alert(decryptedData);
-            var blob = new Blob([decryptedData], {type: "text/plain;charset=utf-8"});
+            // convert single-byte character stream to ArrayBuffer bytestream
+            var contentBytes = new Uint8Array(decryptedData.length);
+            for (var i=0; i<decryptedData.length; i++) {
+                contentBytes[i] = decryptedData.charCodeAt(i);
+            }
+            var blob = new Blob([contentBytes], { type: 'application/octet-stream' });
             saveAs(blob, filename);
         }
 
@@ -258,30 +316,70 @@
                 processData:false, //To avoid making query String instead of JSON
                 success: function(data){
                     var json = JSON.parse(data);
-                    saveFileKey(json["encryptedKey"],json["fileContent"],filename);
+                    saveFile(json["encryptedKey"],json["fileContent"],filename);
                 }});
         }
 
-        function getShareFile(){
+        //        Key storing in browser
+        function get_value(){
 
-            $.ajax({
-                url:'getFile.html',
-                type:"GET",
-                contentType: "application/json; charset=utf-8",
-                data: "username=" +filename, //Stringified Json Object
-                async: false,    //Cross-domain requests and dataType: "jsonp" requests do not support synchronous operation
-                cache: false,    //This will force requested pages not to be cached by the browser
-                processData:false, //To avoid making query String instead of JSON
-                success: function(data){
-                    alert(data);
-                }});
+            var key = localStorage.getItem("cloud4s_"+"${pageContext.request.userPrincipal.name}");
+            alert(key);
+            if (key==null){
+                $(function() {
+                    document.getElementById('inputKey1').value = "";
+                    var popup = $( "#keyPopUp" );
+                    popup.dialog({
+                        autoOpen: false,
+                        modal: true,
+                        buttons: {
+                            "Store": function() {
+                                insert_value();
+                                popup.dialog("close");
+                            }
+                        },
+                        hide: "puff",
+                        show : "slide",
+                        height: 300,
+                        width:300
+                    });
+                    popup.dialog( "open" );
+                });
+                var val = document.getElementById("inputKey1").value;
+                return val;
+            }
+            else{
+                return val;
+            }
         }
+
+
+        function insert_value() {
+            var val = document.getElementById("inputKey1").value;
+            localStorage.setItem("cloud4s_" + "${pageContext.request.userPrincipal.name}", val);
+
+        }
+
+//        function getShareFile(){
+//
+//            $.ajax({
+//                url:'getFile.html',
+//                type:"GET",
+//                contentType: "application/json; charset=utf-8",
+//                data: "username=" +filename, //Stringified Json Object
+//                async: false,    //Cross-domain requests and dataType: "jsonp" requests do not support synchronous operation
+//                cache: false,    //This will force requested pages not to be cached by the browser
+//                processData:false, //To avoid making query String instead of JSON
+//                success: function(data){
+//                    alert(data);
+//                }});
+//        }
 
     </script>
 
 </head>
 
-<body onload="harshikaAjax()">
+<body onload="harshikaAjax();get_value();">
 <%--Header--%>
 <jsp:include page="header.jsp" />
 <%--Body Content--%>
@@ -320,12 +418,6 @@
             <div class="row">
                 <div class="col-lg-12">
                     <h1 class="page-header"> My Files</h1>
-                    <%--<ol class="breadcrumb">--%>
-                        <%--&lt;%&ndash;<li class="active">&ndash;%&gt;--%>
-                            <%--&lt;%&ndash;<i class="fa fa-dashboard"></i> My Files&ndash;%&gt;--%>
-                        <%--&lt;%&ndash;</li>&ndash;%&gt;--%>
-                    <%--</ol>--%>
-
                 </div>
             </div>
         </div>
@@ -333,23 +425,65 @@
     <%--list display--%>
     <div class="table-responsive">
     <table id="table" name="table" class="table table-hover table-striped table-condensed">
-        <%--<tr>--%>
-            <%--<td>Name</td>--%>
-            <%--<td>Icon</td>--%>
-            <%--<td>Path</td>--%>
-        <%--</tr>--%>
+
     </table>
     </div>
-            <div id="sharePopUp" title="Share File" style="width: 200px; height: 200px" hidden="hidden">
-    <%--<div>--%>
-        <%--<a href="#" class="btn btn-info btn-lg"><span class="fa fa-download"></span> Search</a>--%>
-    <%--</div>--%>
-    <%----%>
-</div>
+
+    <%--share popup--%>
+    <div id="sharePopUp" title="Share File" hidden="hidden">
+        <div class="row">
+            <div class="col-lg-2"><label>E-mail</label></div>
+            <div class="col-lg-8"><input id="currentEmail" type="text" style="width: 100%; height: 30px;"/></div>
+            <div class="col-lg-2"><button id="addEmail">Add</button></div>
+        </div>
+        <div hidden="hidden" id="emailValidation">Not an Email</div>
+        <br>
+        <div class="row">
+            <textarea id="emailList" style="position: unset; width: 100%; left: 3%;  min-height: 150px;" readonly></textarea>
+        </div>
+        <div class="row">
+            <div class="col-lg-4"><label>Receiver's Public Key:</label></div>
+            <div class="col-lg-8"><textarea id="recPubKey" placeholder="Public key"></textarea></div>
+        </div>
+    </div>
+    <div id="alertPopup" title=""  hidden="hidden"></div>
 
 </div>
+    <div id="keyPopUp" hidden="hidden" title="Store Key">
+        <input type="text"  value="${pageContext.request.userPrincipal.name}">
+        <p></p>
+        <input type="text" id="inputKey1"  placeholder="Key">
+    </div>
+
 <%--Footer--%>
 <jsp:include page="footer.jsp" />
+
+<script>
+    $(document).ready(function(){
+        var emailList = $('#emailList');
+        $('#addEmail').click(function(){
+            var currentEmail = $('#currentEmail');
+            if(IsEmail(currentEmail.val())){
+                $('#emailValidation').hide();
+                var list = emailList.val();
+                if(list==""){
+                    emailList.val(currentEmail.val()); //updated email list
+                }
+                else{
+                    emailList.val(list+"; "+currentEmail.val()); //updated email list
+                }
+                currentEmail.val(""); //resetting email entering field
+            }
+            else{
+                $('#emailValidation').show();
+            }
+        });
+    });
+    function IsEmail(email) {
+        var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+        return regex.test(email);
+    }
+</script>
 
 </body>
 

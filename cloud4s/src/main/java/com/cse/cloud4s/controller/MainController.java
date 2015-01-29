@@ -3,9 +3,9 @@ package com.cse.cloud4s.controller;
 /**
  * Created by hp on 12/3/2014.
  */
+
 import com.cse.cloud4s.dao.UserDao;
 import com.cse.cloud4s.model.Shared;
-import com.cse.cloud4s.model.User;
 import com.cse.cloud4s.service.DropBoxApi;
 import com.cse.cloud4s.service.FileKeyApi;
 import com.cse.cloud4s.service.JsonResponse;
@@ -28,17 +28,14 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.Statement;
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import java.io.*;
 import java.util.List;
+import java.util.Properties;
 import java.util.jar.JarException;
+
 
 @Controller
 public class MainController {
@@ -87,16 +84,21 @@ public class MainController {
     @RequestMapping(value = { "/dropbox**" }, method = RequestMethod.GET)
     public ModelAndView popupform() {
 
+        String TokenUrl;
         ModelAndView model = new ModelAndView();
         try {
-            dropboxapi.connect();
+            TokenUrl=dropboxapi.connect();
             LOG.info("created connnection to dropbox");
 
         } catch (IOException e) {
             e.printStackTrace();
+            TokenUrl=null;
         } catch (DbxException e) {
             e.printStackTrace();
+            TokenUrl=null;
         }
+        System.out.println("token url is :::::::::::::::::::::::::::"+ TokenUrl);
+        model.addObject("TokenUrl", TokenUrl);
         model.setViewName("dropbox");
         return model;
 
@@ -126,34 +128,12 @@ public class MainController {
         }
     }
 
-//    @RequestMapping(value = { "/upload" }, method = RequestMethod.POST)
-//    public @ResponseBody
-//    ModelAndView uploadPage(@ModelAttribute("fileName")String filename, HttpServletRequest request, HttpServletResponse response) {
-//
-//        ModelAndView model = new ModelAndView();
-//        String LocalPath="C:/Users/hp/Downloads/"+filename;
-//        String DropboxPath="/"+filename;
-//
-//        try {
-//            Thread.sleep(5000);// have to remove wih proper mechanism
-//            dropboxapi.uploadFile(client,LocalPath,DropboxPath);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        } catch (DbxException e) {
-//            e.printStackTrace();
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//
-//        model.setViewName("dashboard");
-//        return model;
-//    }
-//
     @RequestMapping(value = { "/upload" }, method = RequestMethod.GET)
     public ModelAndView uploadPage(@ModelAttribute("fileName")String filename,
                                    BindingResult result) {
 
         ModelAndView model = new ModelAndView();
+//        String LocalPath="/home/hasitha/Downloads/";
         String LocalPath="C:/Users/hp/Downloads/";
 //        String DropboxPath="/"+filename;
 
@@ -167,7 +147,8 @@ public class MainController {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
+        File file = new File("C:/Users/hp/Downloads/"+filename);
+        file.delete();
         model.setViewName("dashboard");
         return model;
     }
@@ -188,11 +169,34 @@ public class MainController {
         } catch (DbxException e) {
             e.printStackTrace();
         }
-
-
-
         model.setViewName("dashboard");
         return model;
+    }
+
+    @RequestMapping(value = { "/shareFile**" }, method = RequestMethod.GET)
+    @ResponseBody
+    public String shareFile( @ModelAttribute("filename")String filename,
+                             @ModelAttribute("to")String to,
+                             @ModelAttribute("defileKey")String defileKey,
+                             @ModelAttribute("path")String path) {
+
+        JSONObject results= new JSONObject();
+        try {
+
+            String [] toArray = to.split("; ");
+            System.out.print(toArray);
+            if (sendMail(toArray,filename,defileKey,path)){
+                results.put("msg","success");
+            }
+            else{
+                results.put("msg","error");
+            }
+            return results.toString();
+        }
+        catch (Exception e) {
+            results.put("msg", "error");
+            return results.toString();
+        }
     }
 
     @RequestMapping(value = { "/getShare**" }, method = RequestMethod.GET)
@@ -231,8 +235,10 @@ public class MainController {
         int i = 0;
         JSONArray listArray = new JSONArray();
         JSONObject results = new JSONObject();
+//        File file = new File("/home/hasitha/Downloads/"+filename);
         File file = new File("C:/Users/hp/Downloads/"+filename);
         FileInputStream fin = null;
+        System.out.println("file name :::::::::::::::::::::::::::::::::::::::::::::::::::::"+ filename );
         try {
             // create FileInputStream object
             fin = new FileInputStream(file);
@@ -241,9 +247,10 @@ public class MainController {
             fin.read(fileContent);
             //create string from byte array
             String s = new String(fileContent);
-            System.out.println("File content: " + s);
+            System.out.println("File content::::::::::::::::::::::::::::::::::::::::: " + s);
             results.put("fileContent", s);
             results.put("encryptedKey",encryptedFilekey);
+            System.out.println("File content::::::::::::::::::::::::::::::::::::::::: " + encryptedFilekey);
         } catch (FileNotFoundException e) {
             System.out.println("File not found" + e);
             results.put("fileContent", "FileNotFoundException");
@@ -260,6 +267,9 @@ public class MainController {
                 System.out.println("Error while closing stream: " + ioe);
             }
         }
+        file.delete();
+//        File file1 = new File("C:/Users/hp/Downloads/"+filename+".encrypted");
+//        file1.delete();
         System.out.println(results.toString());
         return results.toString();
     }
@@ -281,39 +291,15 @@ public class MainController {
             e.printStackTrace();
         }
         encryptedFilekey = fileKeyApiApi.getFileKey(FileName,Username);
-        System.out.println("File Key from DB :"+ encryptedFilekey);
+        System.out.println("File Key from DB ::::::::::::::::::::::::::::::::::::::::::::"+ encryptedFilekey);
         ModelAndView model = new ModelAndView();
         model.setViewName("dashboard");
         return model;
     }
 
-//    @RequestMapping(value = { "/saveuser**" }, method = RequestMethod.POST)
-////    @RequestMapping(value =“/result”, method = RequestMethod.POST)
-//
-//    public ModelAndView saveUser(@ModelAttribute("inputName")String username,
-//                                 @ModelAttribute("inputEmail")String email,
-//                                 @ModelAttribute("inputPassword")String password,
-//                                 @ModelAttribute("inputKey")String masterkey,
-//                                 BindingResult result) {
-//
-//        ModelAndView model = new ModelAndView();
-//        userdao=new UserDaoImpl();
-//
-//        if(result.hasErrors()){
-//            model.setViewName("welcome");
-//            return model;
-//        }else{
-//            userdao.saveUser(username,password);
-//            model.setViewName("login");
-//            return model;
-//        }
-//
-//
-//    }
+
     @RequestMapping(value = { "/loadfiles**" }, method = RequestMethod.GET)
     @ResponseBody
-//    public DbxEntry.WithChildren loadFiles() {
-//    public JsonResponse loadFiles() {
     public String loadFiles() throws JarException{
         String note;
         DbxEntry.WithChildren list;
@@ -342,6 +328,7 @@ public class MainController {
     return results.toString();
 
 }
+
     @RequestMapping(value = { "/signup**" }, method = RequestMethod.GET)
     public ModelAndView signup() {
 
@@ -387,31 +374,6 @@ public class MainController {
 
         ModelAndView model = new ModelAndView();
 
-        Connection connection = null;
-        String dburl = "jdbc:mysql://192.248.15.169:3306/cloud4s";
-        String userName = "root";
-        String passWord = "sameera";
-
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-
-            connection = DriverManager.getConnection(dburl, userName, passWord);
-            Statement st = connection.createStatement();
-
-            String query = "INSERT INTO Example (`TestColumn`) VALUES('hello')";
-            int rsI = st.executeUpdate(query);
-            System.out.println("Hi");
-        }catch (Exception e) {
-            System.out.println(e);
-        } finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                    System.out.println("Database connection terminated");
-                } catch (Exception e) { /* ignore close errors */ }
-            }
-        }
-
         model.setViewName("popupform");
 
         return model;
@@ -449,6 +411,72 @@ public class MainController {
         fileKeyApiApi.saveFileKey(fileKey);
     }
 
+    //Share files with external users.
+    @RequestMapping(value = { "/shareToOut" }, method = RequestMethod.GET)
+    @ResponseBody
+    public String shareDataToOut(@ModelAttribute("fileName")String fileName,
+                                    @ModelAttribute("filePath")String filePath,
+                                    @ModelAttribute("userName")String userName) {
+        //file path is get it can be usefull when generating dropbox link
+        StringWriter out = new StringWriter();
 
+        try {
+            String fileKey = fileKeyApiApi.getFileKey(fileName,userName);
+            JSONObject obj=new JSONObject();
+            obj.put("filekey",new String(fileKey));
+            obj.writeJSONString(out);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String jsonText = out.toString();
+        System.out.println(jsonText);
+        return  jsonText;
+    }
+
+    public boolean sendMail(String[] to,String filename,String defileKey,String path)
+    {
+        final String username = "cloud4s.cse@gmail.com";
+        final String password = "cloud4s@cse";
+        String Url_old= null;
+        try {
+            Url_old = client.createShareableUrl(path);
+        } catch (DbxException e) {
+            e.printStackTrace();
+        }
+        String Url = Url_old.substring(0, Url_old.length() - 1)+"1";
+        String content = "Go to this link: "+Url+"&key="+defileKey;
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true");
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587");
+
+        Session session = Session.getInstance(props,
+                new javax.mail.Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(username, password);
+                    }
+                });
+
+        try {
+            Message message = new MimeMessage(session);
+            InternetAddress[] recipientAddress = new InternetAddress[to.length];
+
+            message.setSubject("Shared file "+filename);
+            message.setText(content);
+
+            for (int i=0; i<to.length; i++){
+                recipientAddress[i] = new InternetAddress(to[i]);
+                message.setRecipient(Message.RecipientType.TO, recipientAddress[i]);
+                Transport.send(message);
+            }
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            return false;
+        }
+    }
 
 }

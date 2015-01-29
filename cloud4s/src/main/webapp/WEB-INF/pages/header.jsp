@@ -27,38 +27,9 @@
 
     <script src='<c:url value="/js/jquery.js" />' type="text/javascript"></script>
     <script src='<c:url value="/js/jquery-ui.js" />' type="text/javascript"></script>
-    <%--<script src="http://ajax.googleapis.com/ajax/libs/prototype/1.7.1.0/prototype.js"></script>--%>
-    <%--<script src="//cdnjs.cloudflare.com/ajax/libs/json2/20110223/json2.js"></script>--%>
-    <%--<script src="../../js/jstorage.js"></script>--%>
-    <%--<script src="https://raw.github.com/andris9/jStorage/master/jstorage.js"></script>--%>
 
-    <%--<link href="/css/elements.css" rel="stylesheet">--%>
-    <%--<script src="/js/my-js.js"></script>--%>
-    <%--<script src="../../js/browserstore.js"></script>--%>
 
 </head>
-
-<script>
-    function get_value(){
-        var key = localStorage.getItem("${pageContext.request.userPrincipal.name}");
-        alert(key);
-        if (key!=null){
-            return key;
-        }
-        else{
-            div_show();
-            var val = $('inputKey').value;
-            return val;
-        }
-    }
-
-    function insert_value(){
-        var key = $('inputName').value,
-                val = $('inputKey').value;
-        localStorage.setItem(key, val);
-
-    }
-</script>
 <body>
 <sec:authorize access="hasRole('ROLE_USER')">
     <!-- For login user -->
@@ -87,12 +58,15 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/#" style="color: #ffffff"><img src="/img/cloud_globe.png" style="height: 60px; margin-top: -10px;"></a>
+            <a class="navbar-brand" href="/#" style="color: #ffffff"><img src="/img/cloud_globe.png" style="height: 60px; margin-top: -15px;"></a>
         </div>
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav navbar-right" style="color: #ffffff">
+            <ul class="nav navbar-nav navbar-right navbar-custom">
 
+                <li style="display:${pageContext.request.userPrincipal.name == null ? 'none' : 'block'};">
+                    <a href="/dash">DashBoard</a>
+                </li>
                 <li id="serviceTab">
                     <a href="/#secA">Services</a>
                 </li>

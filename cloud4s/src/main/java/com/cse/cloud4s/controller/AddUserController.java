@@ -58,14 +58,20 @@ public class AddUserController {
             return model;
         }
     }
+    @RequestMapping(value = { "/postmethodcheck" }, method = RequestMethod.POST)
+    public void postcheck(){
+        System.out.println("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<, post method recieved>>>>>>>>>>>>>>>>");
+    }
 
-    @RequestMapping(value = { "/getAllUsers**" }, method = RequestMethod.GET)
+//    @RequestMapping(value = { "/getAllUsers**" }, method = RequestMethod.POST)
+    @RequestMapping(value = { "/getAllUsers**" })
     @ResponseBody
     public String getAllUsers() throws JarException {
         JSONObject[] allUsers;
         int i=0;
         JSONArray listArray = new JSONArray();
         JSONObject results= new JSONObject();
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> recievedto postmethod");
 
         List<User> allUserList;
         allUserList=addUser.getAllUsers();

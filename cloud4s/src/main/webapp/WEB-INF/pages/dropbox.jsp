@@ -18,9 +18,23 @@
     <link href="css/bootstrap.css" rel="stylesheet">
     <link href="css/main.css" rel="stylesheet">
 
+    <script>
+
+        setInterval(loadUrl(),1000);
+        function loadUrl(){
+
+            var url=document.getElementById('TokenUrl').value;
+            if(url!="null") {
+//                alert(url);
+                var win = window.open(url, '_blank');
+                win.focus();
+            }
+        }
+    </script>
+
 </head>
 
-<body>
+<body onload="loadUrl()">
 
 <%--Header--%>
 <jsp:include page="header.jsp" />
@@ -36,7 +50,9 @@
             <button class="btn btn-lg btn-primary btn-block" type="submit">Go Dashboard</button>
 
         </form>
-
+        <input id="TokenUrl" class="form-control" name="TokenUrl" value="${TokenUrl}" required="" autofocus="" type="hidden" >
+        <%--<label>${TokenUrl}</label>--%>
+        <%--<title>${TokenUrl}</title>--%>
     </div>
 
 </div>

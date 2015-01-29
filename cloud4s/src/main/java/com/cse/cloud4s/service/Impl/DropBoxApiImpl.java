@@ -22,7 +22,7 @@ public class DropBoxApiImpl implements DropBoxApi {
     private final String USER_AGENT = "Mozilla/34.0.5";
 
 //    public DbxWebAuthNoRedirect connect() throws IOException,DbxException {         //connect to dropbox .returns object of DbxClient.APP_KEY and APP_SECRET should be developers one.
-    public void connect() throws IOException,DbxException {         //connect to dropbox .returns object of DbxClient.APP_KEY and APP_SECRET should be developers one.
+    public String connect() throws IOException,DbxException {         //connect to dropbox .returns object of DbxClient.APP_KEY and APP_SECRET should be developers one.
 
         final String APP_KEY = "fs8foggwxwv107a";
         final String APP_SECRET = "r1xnydvhr3m6l55";
@@ -36,6 +36,7 @@ public class DropBoxApiImpl implements DropBoxApi {
 
         // Have the user sign in and authorize your app.
         String authorizeUrl = webAuth.start();
+//        authorizeUrl += "&redirect_uri=http://localhost:8080/dash";
         System.out.println("1. Go to: " + authorizeUrl);
         System.out.println("2. Click \"Allow\" (you might have to log in first)");
         System.out.println("3. Copy the authorization code.");
@@ -45,11 +46,11 @@ public class DropBoxApiImpl implements DropBoxApi {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Desktop.getDesktop().browse(java.net.URI.create(authorizeUrl));
+//        Desktop.getDesktop().browse(java.net.URI.create(authorizeUrl));
 
 //            String code = this.getCode(authorizeUrl);
         this.webAuth=webAuth;
-//        return webAuth;
+        return authorizeUrl;
     }
 
 //     public DbxClient verify(DbxWebAuthNoRedirect webAuth)throws IOException,DbxException{
@@ -88,7 +89,9 @@ public class DropBoxApiImpl implements DropBoxApi {
     }
 
     public void downloadfile(DbxClient client,String filename,String path) throws DbxException,IOException{ //file name should be in string of downloading file.path should be where to be downloaded
+//        FileOutputStream outputStream = new FileOutputStream("/home/hasitha/Downloads/"+filename);
         FileOutputStream outputStream = new FileOutputStream("C:/Users/hp/Downloads/"+filename);
+//        File file=new File("C:/Users/hp/Downloads"+filename);
         try {
             DbxEntry.File downloadedFile = client.getFile(path,null,outputStream);
             System.out.println("Metadata: " + downloadedFile.toString());
