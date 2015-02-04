@@ -19,7 +19,6 @@
     <link href='<c:url value="/css/jquery-ui.css" />' rel="stylesheet" type="text/css"/>
     <link href='<c:url value="/css/jquery-ui.theme.css" />' rel="stylesheet" type="text/css"/>
 
-
     <script src="js/main.js"></script>
 
     <!--AES sripts-->
@@ -113,7 +112,7 @@
 
 
         function download(id) {
-            var values = (document.getElementById(id).value).split(",");;
+            var values = (document.getElementById(id).value).split(",");
             console.log(values);
             var username = "${pageContext.request.userPrincipal.name}";
             $.ajax({
@@ -133,7 +132,8 @@
         function share(id) {
             $('#emailValidation').hide();
             var values = (document.getElementById(id).value).split(",");
-
+            var fileName = values[0];
+            var filePath = values[1];
             $(function() {
                 var popup = $( "#sharePopUp" );
                 var alertPopup = $('#alertPopup');
@@ -150,24 +150,7 @@
                     buttons: {
                         "Share": function() {
                             var list = $('#emailList').val();
-                            $.ajax({
-                                type : "GET",
-                                url : "/shareFile",
-                                dataType : "json",
-                                cache : false ,
-                                contentType : 'application/json; charset=utf-8',
-                                data : "filename=" + values[0] + "&to=" + list,
-                                success : function() {
-                                    $('#emailList').val("");
-                                    $('#currentEmail').val("");
-                                    alertPopup.prop('title', 'Success :)');
-                                    alertPopup.dialog("open");
-                                },
-                                error : function(e) {
-                                    alertPopup.prop('title', 'Error :(');
-                                    alertPopup.dialog("open");
-                                }
-                            });
+                            shareToOut(fileName,filePath,list)
                             popup.dialog( "close" );
                         },
                         "Cancel": function() {
@@ -184,6 +167,53 @@
                 popup.dialog( "open" );
             });
 
+        }
+
+        //Share files with external users.
+        function shareToOut(fileName,filePath,list){
+            var MasterKey = "hasithaKey";
+            var userName = "${pageContext.request.userPrincipal.name}";
+            $.ajax({
+                type : "Get",
+                url : "shareToOut.html",
+                dataType : "json",
+                cache : false ,
+                contentType: "application/json; charset=UTF-8",
+                data : "fileName=" + fileName + "&filePath=" + filePath+"&userName="+userName,
+                success : function(response) {
+                    var jsonObj = response;
+                    console.log("file key: "+jsonObj["filekey"]);
+                    var decryptedFileKey = Aes.Ctr.decrypt(jsonObj["filekey"],MasterKey,256);
+                    console.log("decrypted file key: "+decryptedFileKey);
+                    sendMails(fileName,decryptedFileKey,list,filePath);
+                },
+                error : function(e) {
+                    alert('Error: ' + e);
+                }
+            });
+        }
+
+        //send mails to external users.
+        function sendMails(fileName,decryptedFileKey,mailList,path){
+            var alertPopup = $('#alertPopup');
+            $.ajax({
+                type : "GET",
+                url : "/shareFile",
+                dataType : "json",
+                cache : false ,
+                contentType : 'application/json; charset=utf-8',
+                data : "filename=" + fileName + "&to=" + mailList+"&defileKey="+decryptedFileKey+"&path="+path,
+                success : function() {
+                    $('#emailList').val("");
+                    $('#currentEmail').val("");
+                    alertPopup.prop('title', 'Success :)');
+                    alertPopup.dialog("open");
+                },
+                error : function(e) {
+                    alertPopup.prop('title', 'Error :(');
+                    alertPopup.dialog("open");
+                }
+            });
         }
 
         function decryptFile(file,key){
@@ -250,17 +280,17 @@
             });
         }
 
-        function saveFileKey(enKey,data,fileName){
-            var filename = fileName.replace(/\.encrypted$/,'');
-            var MasterKey = "hasithaKey";
-            var decryptedFileKey = Aes.Ctr.decrypt(enKey,MasterKey,256);
-            console.log("decrypted file key:"+decryptedFileKey);
-            alert(decryptedFileKey);
-            var decryptedData = Aes.Ctr.decrypt(data,decryptedFileKey,256);
-            alert(decryptedData);
-            var blob = new Blob([decryptedData], {type: "text/plain;charset=utf-8"});
-            saveAs(blob, filename);
-        }
+//        function saveFileKey(enKey,data,fileName){
+//            var filename = fileName.replace(/\.encrypted$/,'');
+//            var MasterKey = "hasithaKey";
+//            var decryptedFileKey = Aes.Ctr.decrypt(enKey,MasterKey,256);
+//            console.log("decrypted file key:"+decryptedFileKey);
+//            alert(decryptedFileKey);
+//            var decryptedData = Aes.Ctr.decrypt(data,decryptedFileKey,256);
+//            alert(decryptedData);
+//            var blob = new Blob([decryptedData], {type: "text/plain;charset=utf-8"});
+//            saveAs(blob, filename);
+//        }
 
         function readFile(filename){
             $.ajax({
