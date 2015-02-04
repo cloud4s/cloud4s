@@ -14,8 +14,7 @@
 <head>
 
     <link rel="icon" href="/img/favicon.ico">
-
-    <meta charset="utf-8">
+    
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="DashBoard for Cloud4s">
@@ -24,10 +23,6 @@
     <link href='<c:url value="/css/main.css" />' rel="stylesheet" type="text/css"/>
     <link href='<c:url value="/css/bootstrap.min.css" />' rel="stylesheet" type="text/css"/>
     <link href='<c:url value="/fonts/css/font-awesome.min.css" />' rel="stylesheet" type="text/css"/>
-
-    <script src='<c:url value="/js/jquery.js" />' type="text/javascript"></script>
-    <script src='<c:url value="/js/jquery-ui.js" />' type="text/javascript"></script>
-
 
 </head>
 

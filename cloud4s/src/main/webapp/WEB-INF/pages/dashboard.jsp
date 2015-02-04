@@ -20,6 +20,8 @@
     <link href='<c:url value="/css/jquery-ui.theme.css" />' rel="stylesheet" type="text/css"/>
 
     <script src="js/main.js"></script>
+    <script src='<c:url value="/js/jquery.js" />' type="text/javascript"></script>
+    <script src='<c:url value="/js/jquery-ui.js" />' type="text/javascript"></script>
 
     <!--AES sripts-->
     <script src="js/aes/aes.js"></script>
@@ -150,6 +152,10 @@
                     buttons: {
                         "Share": function() {
                             var list = $('#emailList').val();
+                            if($('#publicMode').is(':checked'))
+                            {
+                                list= $('#currentEmail').val();
+                            }
                             shareToOut(fileName,filePath,list)
                             popup.dialog( "close" );
                         },
@@ -196,13 +202,15 @@
         //send mails to external users.
         function sendMails(fileName,decryptedFileKey,mailList,path){
             var alertPopup = $('#alertPopup');
+            var publicMode = $('#publicMode');
+            var ispublic = publicMode.is(':checked')
             $.ajax({
                 type : "GET",
                 url : "/shareFile",
                 dataType : "json",
                 cache : false ,
                 contentType : 'application/json; charset=utf-8',
-                data : "filename=" + fileName + "&to=" + mailList+"&defileKey="+decryptedFileKey+"&path="+path,
+                data : "filename=" + fileName + "&to=" + mailList+"&defileKey="+decryptedFileKey+"&path="+path+"&public="+ispublic,
                 success : function() {
                     $('#emailList').val("");
                     $('#currentEmail').val("");
@@ -376,19 +384,24 @@
     </table>
     </div>
 
-    <%--share popup--%>
+    <%--public share popup--%>
     <div id="sharePopUp" title="Share File" hidden="hidden">
+        Public Share <input type="checkbox" id="publicMode" class="pull-right">
         <div class="row">
-            <div class="col-lg-2"><label>E-mail</label>                 </div>
-            <div class="col-lg-8"><input id="currentEmail" type="text" style="width: 100%; height: 30px;"/></div>
-            <div class="col-lg-2"><button id="addEmail">Add</button>    </div>
+            <div class="col-lg-2"><label>E-mail</label></div>
+            <div class="col-lg-8"><input id="currentEmail" type="text" placeholder="Email" style="width: 100%; height: 30px;"/></div>
+            <div class="col-lg-2"><button id="addEmail">Add</button></div>
         </div>
         <div hidden="hidden" id="emailValidation">Not an Email</div>
         <br>
         <div class="row">
             <textarea id="emailList" style="position: absolute; width: 94%; left: 3%;  min-height: 150px;" readonly></textarea>
         </div>
+        <div class="row">
+            <input type="text" id="publicKey" placeholder="public key" hidden="hidden" style="position: relative; width: 94%; left: 3%; top: 175px">
+        </div>
     </div>
+
     <div id="alertPopup"  hidden="hidden">
 
     </div>
@@ -400,7 +413,11 @@
 <script>
     $(document).ready(function(){
         var emailList = $('#emailList');
-        $('#addEmail').click(function(){
+        var publicMode= $('#publicMode');
+        var publicKey = $('#publicKey');
+        var addMail = $('#addEmail');
+
+        addMail.click(function(){
             var currentEmail = $('#currentEmail');
             if(IsEmail(currentEmail.val())){
                 $('#emailValidation').hide();
@@ -415,6 +432,21 @@
             }
             else{
                 $('#emailValidation').show();
+            }
+        });
+        publicMode.change(function(){
+            if(publicMode.is(':checked')){
+                publicKey.show();
+                addMail.hide();
+                emailList.hide();
+                if(emailList.val().toString().indexOf(";") >= 0){
+                    emailList.val("");
+                }
+            }
+            else{
+                publicKey.hide();
+                addMail.show();
+                emailList.show();
             }
         });
     });

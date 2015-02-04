@@ -15,8 +15,7 @@
 
     <title>DropBox Authentication</title>
 
-    <link href="css/bootstrap.css" rel="stylesheet">
-    <link href="css/main.css" rel="stylesheet">
+
 
 </head>
 
