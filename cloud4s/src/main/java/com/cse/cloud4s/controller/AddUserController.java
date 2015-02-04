@@ -43,12 +43,10 @@ public class AddUserController {
         ModelAndView model = new ModelAndView();
         User user = new User();
 
-
         if (result.hasErrors()) {
             model.setViewName("welcome");
             return model;
         } else {
-
             user.setUsername(username);
             user.setPassword(password);
             user.setEmail(email);
@@ -86,9 +84,7 @@ public class AddUserController {
         }
         System.out.println( results.toString() );
         return results.toString();
-
     }
-
 
 }
 

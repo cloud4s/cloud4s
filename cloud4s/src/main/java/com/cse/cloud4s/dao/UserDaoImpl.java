@@ -39,6 +39,22 @@ public class UserDaoImpl implements UserDao {
 
     }
 
+    @Override
+    public String getPubkeyByEmail(String email) {
+        Session session=this.sessionFactory.openSession();
+        session.beginTransaction();
+        List<User> Users;
+        Users = session.createQuery("from User where email=:Email")
+                .setParameter("Email", email).list();
+        String pubKey=  Users.get(0).getEmail();
+
+        if (Users.size()>0) {
+            System.out.println("Public Key: " + pubKey);
+            return pubKey;
+        } else {
+            return null;
+        }
+    }
 
 
     @SuppressWarnings("unchecked")
