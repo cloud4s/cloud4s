@@ -26,10 +26,6 @@
             <a href=""><img class="img-thumbnail img-adjust" src="/img/skydrive.png" alt="Sky Drive"></a>
             <a href=""><img class="img-thumbnail img-adjust"src="/img/amazone.png" alt="Drop Box advanced"></a>
 
-            <td colspan='2'><input name="submit" type="submit"  hidden="hidden"
-                                       value="submit" class="btn btn-lg btn-primary btn-block" onclick="get_value()"/></td>
-
-
         </div>
     </div>
     </div>
