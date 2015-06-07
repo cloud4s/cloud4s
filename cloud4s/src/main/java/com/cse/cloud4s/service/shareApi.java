@@ -10,7 +10,15 @@ import java.util.List;
  */
 public interface shareApi {
 
-    public  void shareLink(String username, String filename, String link, String filekey);
+    public  void shareLink(String username, String filename, String link, String filekey,String sharedBy,boolean revoke);
 
     public List<Shared> getAllShareLink( String username);
+
+    public List<Shared> getAllShareOut( String username);
+
+    public String revoke_access(String filename,String receiver, String username);
+
+    public String grant_access(String filename,String receiver, String username);
+
+    public String delete_access(String filename,String receiver, String username);
 }

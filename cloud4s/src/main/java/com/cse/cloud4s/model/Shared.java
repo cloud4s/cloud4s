@@ -10,42 +10,32 @@ import javax.persistence.*;
 @Table(name = "shared" , catalog = "cloud4s")
 public class Shared {
 
-    private String username;
-    private String filename;
+
     private String link;
-    private String filekey;
+    private  SharedPK sharedPK = null;
+    private  String filekey;
+    private  boolean revoke;
 
     public Shared() {
     }
 
-    public Shared(String username, String filename, String link, String filekey) {
-        this.username = username;
-        this.filename = filename;
-        this.link    = link;
-        this.filekey = filekey;
-
+    public Shared(SharedPK sharedPK,String link, String filekey,boolean revoke) {
+        super();
+        this.sharedPK   = sharedPK;
+        this.link       = link;
+        this.filekey    = filekey;
+        this.revoke = revoke;
     }
 
     @Id
-    @Column(name = "username" , unique = true, nullable = false,length = 45)
-    public String getUsername() {
-        return this.username;
+    public SharedPK getSharedPK() {
+        return sharedPK;
+    }
+    public void setSharedPK(SharedPK sharedPK) {
+        this.sharedPK = sharedPK;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    @Column(name = "filename", nullable = false, length = 60)
-    public String getfilename() {
-        return this.filename;
-    }
-
-    public void setfilename(String filename) {
-        this.filename = filename;
-    }
-
-    @Column(name = "link", nullable = false, length = 70)
+    @Column(name = "link", nullable = false, length = 255)
     public String getlink() {
         return this.link;
     }
@@ -62,4 +52,14 @@ public class Shared {
     public void setfilekey(String filekey) {
         this.filekey = filekey;
     }
+
+    @Column(name = "revoked", nullable = false)
+    public boolean getAccess() {
+        return this.revoke;
+    }
+
+    public void setAccess(boolean revoke) {
+        this.revoke = revoke;
+    }
+
 }

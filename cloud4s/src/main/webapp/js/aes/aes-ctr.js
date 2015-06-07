@@ -112,6 +112,9 @@ Aes.Ctr.encrypt = function(plaintext, password, nBits) {
  *   var decr = Aes.Ctr.encrypt('lwGl66VVwVObKIr6of8HVqJr', 'pāşšŵōřđ', 256); // decr: 'big secret'
  */
 Aes.Ctr.decrypt = function(ciphertext, password, nBits) {
+    console.log("inside decrypt function..");
+    console.log("file key :"+password);
+
     var blockSize = 16;  // block size fixed at 16 bytes / 128 bits (Nb=4) for AES
     if (!(nBits==128 || nBits==192 || nBits==256)) return ''; // standard allows 128/192/256 bit keys
     ciphertext = String(ciphertext).base64Decode();
@@ -162,7 +165,7 @@ Aes.Ctr.decrypt = function(ciphertext, password, nBits) {
     // join array of blocks into single plaintext string
     var plaintext = plaintxt.join('');
     plaintext = plaintext.utf8Decode();  // decode from UTF8 back to Unicode multi-byte chars
-
+    console.log("plain text:"+plaintext);
     return plaintext;
 };
 

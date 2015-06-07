@@ -13,7 +13,10 @@ public interface UserDao {
     User findByUserName(String username);
 
     public String getPubkeyByEmail(String email);
-    public void saveUser(String username,String password, String email, String publickey);
+
+    public String getPrivateKeyByUsername(String username);
+
+    public void saveUser(String username,String password, String email, String publickey,String privateKey);
 
 
    public List<User> allUsers();

@@ -22,10 +22,12 @@ public class DropBoxApiImpl implements DropBoxApi {
     private final String USER_AGENT = "Mozilla/34.0.5";
 
 //    public DbxWebAuthNoRedirect connect() throws IOException,DbxException {         //connect to dropbox .returns object of DbxClient.APP_KEY and APP_SECRET should be developers one.
-    public String connect() throws IOException,DbxException {         //connect to dropbox .returns object of DbxClient.APP_KEY and APP_SECRET should be developers one.
+    public void connect() throws IOException,DbxException {         //connect to dropbox .returns object of DbxClient.APP_KEY and APP_SECRET should be developers one.
 
-        final String APP_KEY = "fs8foggwxwv107a";
-        final String APP_SECRET = "r1xnydvhr3m6l55";
+//        final String APP_KEY = "fs8foggwxwv107a";
+//        final String APP_SECRET = "r1xnydvhr3m6l55";
+        final String APP_KEY = "uthwboamsw1alja";
+        final String APP_SECRET = "izzrpf8qfw0veqw";
 
         DbxAppInfo appInfo = new DbxAppInfo(APP_KEY, APP_SECRET);
 
@@ -46,11 +48,11 @@ public class DropBoxApiImpl implements DropBoxApi {
         } catch (Exception e) {
             e.printStackTrace();
         }
-//        Desktop.getDesktop().browse(java.net.URI.create(authorizeUrl));
+        Desktop.getDesktop().browse(java.net.URI.create(authorizeUrl));
 
 //            String code = this.getCode(authorizeUrl);
         this.webAuth=webAuth;
-        return authorizeUrl;
+//        return webAuth;
     }
 
 //     public DbxClient verify(DbxWebAuthNoRedirect webAuth)throws IOException,DbxException{
@@ -75,8 +77,13 @@ public class DropBoxApiImpl implements DropBoxApi {
 
         String fileName = name;
         String localPath = path+fileName;
-        String DropboxPath="/Files/"+fileName;
+        String DropboxPath="/cloud4s/"+fileName;
         File inputFile = new File(localPath);
+        boolean notEmpty = inputFile.exists();
+        while (!notEmpty){
+            inputFile = new File(localPath);
+            notEmpty = inputFile.exists();
+        }
         FileInputStream inputStream = new FileInputStream(inputFile);
         try {
             DbxEntry.File uploadedFile = client.uploadFile(DropboxPath,
@@ -85,23 +92,39 @@ public class DropBoxApiImpl implements DropBoxApi {
             url=uploadedFile.path;
         } finally {
             inputStream.close();
+            inputFile.delete();
         }
     }
 
     public void downloadfile(DbxClient client,String filename,String path) throws DbxException,IOException{ //file name should be in string of downloading file.path should be where to be downloaded
-//        FileOutputStream outputStream = new FileOutputStream("/home/hasitha/Downloads/"+filename);
-        FileOutputStream outputStream = new FileOutputStream("C:/Users/hp/Downloads/"+filename);
-//        File file=new File("C:/Users/hp/Downloads"+filename);
+//        FileOutputStream outputStream = new FileOutputStream("C:/Users/hp/Downloads/"+filename);
+        FileOutputStream outputStream = new FileOutputStream(System.getProperty("user.home")+"/Downloads/"+filename);
+//        File inputFile = new File("C:/Users/hp/Downloads/"+filename);
         try {
             DbxEntry.File downloadedFile = client.getFile(path,null,outputStream);
             System.out.println("Metadata: " + downloadedFile.toString());
         } finally {
             outputStream.close();
+//            inputFile.delete();
+
         }
     }
 
     public DbxEntry.WithChildren loadfiles(DbxClient client) throws DbxException { //loading details of files.  only printing name and icon name.there are other attributes also.eg: child.attr
-        DbxEntry.WithChildren listing = client.getMetadataWithChildren("/Files");
+        try {
+            DbxEntry entry = client.getMetadata("/cloud4s");
+            if (entry.isFolder()) {
+
+            } else {
+                client.createFolder("/cloud4s");
+            }
+        }catch (DbxException e){
+            client.createFolder("/cloud4s");
+        }finally {
+            client.createFolder("/cloud4s");
+        }
+
+        DbxEntry.WithChildren listing = client.getMetadataWithChildren("/cloud4s");
         System.out.println("Files in the root path:");
         for (DbxEntry child : listing.children) {
             System.out.println("    " + child.name + ": " + child.iconName+":"+child.path);
@@ -136,8 +159,10 @@ public class DropBoxApiImpl implements DropBoxApi {
 
     }
 
-    public void sharefile(DbxClient client,String url)throws IOException, DbxException{
-
+    public void deleteFile(DbxClient client,String path)throws IOException, DbxException{
+        String filePath ="/"+ path;
+        System.out.println("path"+path);
+        client.delete(path);
 
     }
 

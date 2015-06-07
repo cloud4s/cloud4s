@@ -15,25 +15,28 @@ public class User {
     private String password;
     private String email;
     private String publickey;
+    private String privateKey;
     private boolean enabled;
     private Set<UserRole> userRole = new HashSet<UserRole>(0);
 
     public User() {
     }
 
-    public User(String username, String password, String email, String publickey, boolean enabled) {
+    public User(String username, String password, String email, String publickey,String privateKey, boolean enabled) {
         this.username = username;
         this.password = password;
         this.email    = email;
         this.publickey = publickey;
+        this.privateKey = privateKey;
         this.enabled = enabled;
     }
 
-    public User(String username, String password, String email, String publickey, boolean enabled, Set<UserRole> userRole) {
+    public User(String username, String password, String email, String publickey,String privateKey, boolean enabled, Set<UserRole> userRole) {
         this.username = username;
         this.password = password;
         this.email    = email;
         this.publickey = publickey;
+        this.privateKey = privateKey;
         this.enabled = enabled;
         this.userRole = userRole;
     }
@@ -64,6 +67,13 @@ public class User {
 
     public void setPublickey(String publickey) {
         this.publickey = publickey;
+    }
+
+    @Column(name = "privateKey", nullable = false, length = 70)
+    public String getPrivateKey() {return this.privateKey;}
+
+    public void setPrivateKey(String privateKey) {
+        this.privateKey = privateKey;
     }
 
     @Column(name = "email", nullable = false, length = 70)

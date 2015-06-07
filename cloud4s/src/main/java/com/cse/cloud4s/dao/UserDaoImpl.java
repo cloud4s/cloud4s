@@ -46,11 +46,37 @@ public class UserDaoImpl implements UserDao {
         List<User> Users;
         Users = session.createQuery("from User where email=:Email")
                 .setParameter("Email", email).list();
-        String pubKey=  Users.get(0).getEmail();
+        String pubKey= Users.get(0).getPublickey();
+        String username = Users.get(0).getUsername();
+        String Result = username+"&"+pubKey;
+        session.getTransaction().commit();
+//        session.flush();
+        session.close();
 
         if (Users.size()>0) {
-            System.out.println("Public Key: " + pubKey);
-            return pubKey;
+            System.out.println("Result: " + Result);
+            return Result;
+        } else {
+            return null;
+        }
+    }
+
+    @Override
+    public String getPrivateKeyByUsername(String username) {
+        Session session=this.sessionFactory.openSession();
+        session.beginTransaction();
+        List<User> Users;
+        Users = session.createQuery("from User where username=:Username")
+                .setParameter("Username", username).list();
+        String pubKey= Users.get(0).getPrivateKey();
+        String Result = pubKey;
+        session.getTransaction().commit();
+
+        session.close();
+
+        if (Users.size()>0) {
+            System.out.println("Result: " + Result);
+            return Result;
         } else {
             return null;
         }
@@ -58,7 +84,7 @@ public class UserDaoImpl implements UserDao {
 
 
     @SuppressWarnings("unchecked")
-    public void saveUser(String username,String Password, String email, String publickey){
+    public void saveUser(String username,String Password, String email, String publickey,String privateKey){
         Session session=this.sessionFactory.openSession();
         session.beginTransaction();
 
@@ -69,8 +95,8 @@ public class UserDaoImpl implements UserDao {
         user.setPassword(Password);
         user.setEmail(email);
         user.setPublickey(publickey);
+        user.setPrivateKey(privateKey);
         user.setEnabled(true);
-//        user.setUserRole();
         userrole.setUser(user);
         userrole.setRole("ROLE_USER");
 
@@ -91,6 +117,7 @@ public class UserDaoImpl implements UserDao {
 
         allUsers = session.createQuery("from User").list();
 
+        session.getTransaction().commit();
         session.close();
         return allUsers;
     }

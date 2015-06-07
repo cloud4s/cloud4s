@@ -25,4 +25,8 @@ public interface addUser {
     public  void addUser(com.cse.cloud4s.model.User user);
 
     public List<com.cse.cloud4s.model.User> getAllUsers();
+
+    public String getPubKey(String Email);
+
+    public String getPrivateKey(String Username);
 }

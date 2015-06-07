@@ -5,9 +5,6 @@
 function get_value(){
 
     var value = $.jStorage.get("${pageContext.request.userPrincipal.name}");
-
-    alert(value);
-
     return value;
 }
 

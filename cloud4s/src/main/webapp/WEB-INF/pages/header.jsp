@@ -25,11 +25,12 @@
     <link href='<c:url value="/css/bootstrap.min.css" />' rel="stylesheet" type="text/css"/>
     <link href='<c:url value="/fonts/css/font-awesome.min.css" />' rel="stylesheet" type="text/css"/>
 
-    <script src='<c:url value="/js/jquery.js" />' type="text/javascript"></script>
-    <script src='<c:url value="/js/jquery-ui.js" />' type="text/javascript"></script>
+
 
 
 </head>
+
+
 <body>
 <sec:authorize access="hasRole('ROLE_USER')">
     <!-- For login user -->
@@ -41,6 +42,18 @@
 
     <script>
         function logOut() {
+            $.ajax({
+                url:'deleteDropBoxClient.html',
+                type:"POST",
+                contentType: "application/json; charset=utf-8",
+//                data: "fileName=" +fileName+"&userName="+userName+"&path="+path, //Stringified Json Object
+                async: false, //Cross-domain requests and dataType: "jsonp" requests do not support synchronous operation
+                cache: false, //This will force requested pages not to be cached by the browser
+                processData:false, //To avoid making query String instead of JSON
+                success: function(data){
+//                    var json = JSON.parse(data);
+//                    saveFile(json["encryptedKey"],json["fileContent"],filename);
+                }});
             $('#logoutForm').submit();
         }
 

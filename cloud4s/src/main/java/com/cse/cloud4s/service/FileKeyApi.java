@@ -11,4 +11,6 @@ public interface FileKeyApi {
 
     public String getFileKey(String fileKey, String username);
 
+    public String deleteFile(String filename,String username);
+
 }

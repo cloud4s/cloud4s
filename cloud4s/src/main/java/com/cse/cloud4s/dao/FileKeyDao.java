@@ -9,5 +9,6 @@ public interface FileKeyDao {
 
     public String getFileKey(String filename, String username);
     public void saveFileKey(String username,String fileName,String key);
+    public String deleteFile(String filename,String username);
 
 }

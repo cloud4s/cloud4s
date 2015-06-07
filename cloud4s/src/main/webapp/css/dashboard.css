@@ -33,29 +33,21 @@ tbody td {
     background-color: #CCFFFF;
     text-align: left;
 }
+table.table-hover tr.even:hover td,
+table.table-hover tr.odd:hover td {
+    background-color: #2ed7ea;
+}
 
-
-.share-div{
+tbody td {
+    background-color: #CCFFFF;
+    text-align: left;
 }
 
 .share-button {
-}
-
-.share-div .share-button {
     visibility: hidden;
 }
-.share-div:hover .share-button{
-    visibility: visible;
-}
 
-#abc {
-    width:100%;
-    height:100%;
-    opacity:.95;
-    top:0;
-    left:0;
-    display:none;
-    position:fixed;
-    background-color:#313131;
-    overflow:auto
+table.table-hover tr.even:hover td> .share-button,
+table.table-hover tr.odd:hover td> .share-button{
+    visibility: visible;
 }

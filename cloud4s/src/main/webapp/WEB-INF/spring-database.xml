@@ -14,7 +14,6 @@
           destroy-method="close">
 
         <property name="driverClassName" value="com.mysql.jdbc.Driver" />
-        <!--<property name="url" value="jdbc:mysql://localhost:3306/cloud4s" />-->
         <property name="url" value="jdbc:mysql://192.248.15.169:3306/cloud4s" />
         <property name="username" value="root" />
         <property name="password" value="sameera" />
@@ -50,9 +49,9 @@
     <bean id="fileKeyDao" class="com.cse.cloud4s.dao.FileKeyDaoImpl">
         <property name="sessionFactory" ref="sessionFactory" />
     </bean>
-
-
-
+    <bean id="RecoverDao" class="com.cse.cloud4s.dao.RecoverDaoImpl">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
     <bean id="myUserDetailsService"
           class="com.cse.cloud4s.service.MyUserDetailsService">
         <property name="userDao" ref="userDao" />
@@ -71,6 +70,10 @@
     </bean>
     <bean id="FileKey" class="com.cse.cloud4s.service.Impl.FileKeyApiImpl">
         <property name="fileKeyDao" ref="fileKeyDao" />
+    </bean>
+
+    <bean id="RecoverApi" class="com.cse.cloud4s.service.Impl.RecoverApiImpl">
+        <property name="RecoverDao" ref="RecoverDao" />
     </bean>
 
     <!-- MUST have transaction manager, using aop and aspects  -->

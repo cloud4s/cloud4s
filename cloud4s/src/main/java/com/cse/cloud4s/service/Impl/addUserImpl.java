@@ -23,7 +23,7 @@ public class addUserImpl implements addUser {
 
     @Override
     public  void addUser(com.cse.cloud4s.model.User user){
-            userDao.saveUser(user.getUsername(),user.getPassword(), user.getEmail(),user.getPublickey());
+            userDao.saveUser(user.getUsername(),user.getPassword(), user.getEmail(),user.getPublickey(),user.getPrivateKey());
     }
 
     @Override
@@ -38,4 +38,12 @@ public class addUserImpl implements addUser {
     public UserDao getUserDao() {
         return userDao;
     }
+
+    @Override
+    public String getPubKey(String Email){
+        return userDao.getPubkeyByEmail(Email);
+    }
+
+    @Override
+    public String getPrivateKey(String Username){return userDao.getPrivateKeyByUsername(Username);};
 }

@@ -1,40 +1,68 @@
-CREATE  TABLE users (
-  username VARCHAR(45) NOT NULL ,
-  password VARCHAR(60) NOT NULL ,
-  enabled TINYINT NOT NULL DEFAULT 1 ,
-  email varchar(70) NOT NULL,
-  publickey varchar(70) NOT NULL,
-  PRIMARY KEY (username));
+--
+-- Database: `cloud4s`
+--
+-- --------------------------------------------------------
 
-CREATE TABLE user_roles (
-  user_role_id int(11) NOT NULL AUTO_INCREMENT,
-  username varchar(45) NOT NULL,
-  role varchar(45) NOT NULL,
-  PRIMARY KEY (user_role_id),
-  UNIQUE KEY uni_username_role (role,username),
-  KEY fk_username_idx (username),
-  CONSTRAINT fk_username FOREIGN KEY (username) REFERENCES users (username));
+--
+-- Table structure for table `users`
+--
+CREATE TABLE IF NOT EXISTS `users` (
+  `username` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `enabled` tinyint(4) NOT NULL DEFAULT '1',
+  `email` varchar(255) NOT NULL,
+  `publickey` longtext NOT NULL,
+  `privateKey` longtext NOT NULL,
+  PRIMARY KEY (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-CREATE  TABLE shared (
-  username VARCHAR(45) NOT NULL ,
-  filename VARCHAR(60) NOT NULL ,
-  link varchar(70) NOT NULL,
-  PRIMARY KEY (username));
+--
+-- Table structure for table `user_roles`
+--
+CREATE TABLE IF NOT EXISTS `user_roles` (
+  `user_role_id` int(11) NOT NULL AUTO_INCREMENT,
+  `username` varchar(45) NOT NULL,
+  `role` varchar(45) NOT NULL,
+  PRIMARY KEY (`user_role_id`),
+  UNIQUE KEY `uni_username_role` (`role`,`username`),
+  UNIQUE KEY `UK_stlxfukw77ov5w1wo1tm3omca` (`role`,`username`),
+  KEY `fk_username_idx` (`username`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=19 ;
 
-CREATE  TABLE files (
-  username VARCHAR(45) NOT NULL ,
-  filename VARCHAR(100) NOT NULL ,
-  filekey VARCHAR(200) NOT NULL ,
-  PRIMARY KEY (username,filename));
+--
+-- Table structure for table `files`
+--
+CREATE TABLE IF NOT EXISTS `files` (
+  `username` varchar(45) NOT NULL,
+  `filename` varchar(100) NOT NULL,
+  `filekey` varchar(255) NOT NULL,
+  PRIMARY KEY (`username`,`filename`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO users(username,password,enabled,email,publickey)
-VALUES('alex', '123456', 1, 'sd@reaasdssa.com','alex'),
-('harshika', 'joka', 1, 'hdranaweera@gmail.com','harshika'),
-('mkyong', '123456', 1, 'sd@reaasda.com','mkyong');
+--
+-- Table structure for table `shared`
+--
+CREATE TABLE IF NOT EXISTS `shared` (
+  `username` varchar(255) NOT NULL,
+  `filename` varchar(255) NOT NULL,
+  `link` varchar(255) NOT NULL,
+  `sharedBy` varchar(255) NOT NULL,
+  `filekey` longtext NOT NULL,
+  `revoked` bit(1) NOT NULL,
+  PRIMARY KEY (`username`,`filename`,`sharedBy`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-INSERT INTO user_roles (username, role)
-VALUES ('mkyong', 'ROLE_USER');
-INSERT INTO user_roles (username, role)
-VALUES ('mkyong', 'ROLE_ADMIN');
-INSERT INTO user_roles (username, role)
-VALUES ('alex', 'ROLE_USER');
+--
+-- Table structure for table `key_recovery`
+--
+CREATE TABLE IF NOT EXISTS `key_recovery` (
+  `username` varchar(255) NOT NULL,
+  `requires` int(10) NOT NULL,
+  `shares` int(10) NOT NULL,
+  `details` text NOT NULL,
+  PRIMARY KEY (`username`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 COMMENT='Key recovery information.';
+
+
+
+

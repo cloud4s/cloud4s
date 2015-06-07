@@ -24,6 +24,11 @@ public class FileKeyApiImpl implements FileKeyApi {
         return fileKeyDao.getFileKey(fileKey,username);
     }
 
+    @Override
+    public String deleteFile(String filename,String username){
+        return fileKeyDao.deleteFile(filename,username);
+    }
+
     public void setFileKeyDao(FileKeyDao fileKeyDao) {
         this.fileKeyDao = fileKeyDao;
     }

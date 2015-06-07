@@ -10,7 +10,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Sign up for cloud4s">
-    <meta name="author" content="Sameera">
+    <meta name="author" content="cloud4s">
     <link rel="icon" href="http://getbootstrap.com/favicon.ico">
 
     <title>DropBox Authentication</title>
@@ -18,23 +18,9 @@
     <link href="css/bootstrap.css" rel="stylesheet">
     <link href="css/main.css" rel="stylesheet">
 
-    <script>
-
-        setInterval(loadUrl(),1000);
-        function loadUrl(){
-
-            var url=document.getElementById('TokenUrl').value;
-            if(url!="null") {
-//                alert(url);
-                var win = window.open(url, '_blank');
-                win.focus();
-            }
-        }
-    </script>
-
 </head>
 
-<body onload="loadUrl()">
+<body>
 
 <%--Header--%>
 <jsp:include page="header.jsp" />
@@ -50,9 +36,7 @@
             <button class="btn btn-lg btn-primary btn-block" type="submit">Go Dashboard</button>
 
         </form>
-        <input id="TokenUrl" class="form-control" name="TokenUrl" value="${TokenUrl}" required="" autofocus="" type="hidden" >
-        <%--<label>${TokenUrl}</label>--%>
-        <%--<title>${TokenUrl}</title>--%>
+
     </div>
 
 </div>

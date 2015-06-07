@@ -10,7 +10,7 @@ import java.io.IOException;
 public interface DropBoxApi {
 
 //    public DbxWebAuthNoRedirect connect()throws IOException,DbxException;
-    public String connect()throws IOException,DbxException;
+    public void connect()throws IOException,DbxException;
 
 //    public DbxClient verify(DbxWebAuthNoRedirect webAuth)throws IOException,DbxException;
     public DbxClient verify(String code)throws IOException,DbxException;
@@ -21,5 +21,5 @@ public interface DropBoxApi {
 
     public DbxEntry.WithChildren loadfiles(DbxClient client) throws DbxException;
 
-    public void sharefile(DbxClient client,String url) throws IOException, DbxException;
+    public void deleteFile(DbxClient client,String filename) throws IOException, DbxException;
 }

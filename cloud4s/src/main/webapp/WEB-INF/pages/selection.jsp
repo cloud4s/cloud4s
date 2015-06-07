@@ -7,7 +7,6 @@
 
 <head>
 
-
     <title>Selection - Cloud4s</title>
 
 </head>
@@ -26,8 +25,6 @@
             <a href=""><img class="img-thumbnail img-adjust" src="/img/drive.png"  alt="Drive"></a>
             <a href=""><img class="img-thumbnail img-adjust" src="/img/skydrive.png" alt="Sky Drive"></a>
             <a href=""><img class="img-thumbnail img-adjust"src="/img/amazone.png" alt="Drop Box advanced"></a>
-
-
         </div>
     </div>
     </div>

@@ -9,13 +9,11 @@
     <version>1.0-SNAPSHOT</version>
     <name>cloud4s</name>
 
-
-
     <developers>
         <developer>
             <id>cloud4s</id>
-            <name>harshika</name>
-            <email>hdranawaeera@gamil.com</email>
+            <name>hasitha</name>
+            <email>hasithadkr7@gamil.com</email>
         </developer>
     </developers>
     <properties>
@@ -178,6 +176,12 @@
             <version>1.4.7</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.twilio.sdk</groupId>
+            <artifactId>twilio-java-sdk</artifactId>
+            <version>3.6.2</version>
+            <scope>compile</scope>
+        </dependency>
 
     </dependencies>
 

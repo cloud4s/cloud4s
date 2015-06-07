@@ -3,6 +3,7 @@
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
 function encryptFile(file) {
+
     // use FileReader.readAsArrayBuffer to handle binary files
     var reader = new FileReader();
     reader.readAsArrayBuffer(file);
@@ -11,27 +12,25 @@ function encryptFile(file) {
 
         // Aes.Ctr.encrypt expects a string, but converting binary file directly to string could
         // give invalid Unicode sequences, so convert bytestream ArrayBuffer to single-byte chars
-        var contentBytes = new Uint8Array(reader.result); // ≡ evt.target.result
+        var contentBytes = new Uint8Array(reader.result);
         var contentStr = '';
         for (var i=0; i<contentBytes.length; i++) {
             contentStr += String.fromCharCode(contentBytes[i]);
         }
-        //var password = $('#password-file').val();
-        //var fileKey = Math.uuid();Math.floor((Math.random() * 100000000) + 1);
+
         var fileKey = String(Math.floor((Math.random() * 10000000) + 1));
-        //var fileKey = "12345";
-        alert("File key generated:"+fileKey);
-        //console.log("File key generated:"+fileKey);
+        console.log("File key generated:"+fileKey);
         var t1 = new Date();
         var ciphertext = Aes.Ctr.encrypt(contentStr, fileKey, 256);
         var t2 = new Date();
-        //saveFileKey(fileKey,file.name);
-        sendFileKeyToDB(fileKey,file.name)
-        // use Blob to save encrypted file
+
         var blob = new Blob([ciphertext], { type: 'text/plain' });
         var filename = file.name+'.encrypted';
         var result = saveAs(blob, filename);
+        while(!result){}
         uploadEncryptedFile(filename);
+        sendFileKeyToDB(fileKey,file.name)
+
         $('#fileName').val(filename);
         $('#uploadForm').submit();
         $('#encrypt-file-time').html(((t2 - t1)/1000)+'s'); // display time taken
@@ -39,7 +38,8 @@ function encryptFile(file) {
     }
 }
 
-function decryptFile(file) {
+function decryptFile(file,Key) {
+    console.log("Start file decryption..");
     // use FileReader.ReadAsText to read (base64-encoded) ciphertext file
     var reader = new FileReader();
     reader.readAsText(file);
@@ -47,7 +47,7 @@ function decryptFile(file) {
         $('body').css({'cursor':'wait'});
 
         var content = reader.result; // ≡ evt.target.result
-        var password = $('#password-file').val();
+        var password = Key;
 
         var t1 = new Date();
         var plaintext = Aes.Ctr.decrypt(content, password, 256);
