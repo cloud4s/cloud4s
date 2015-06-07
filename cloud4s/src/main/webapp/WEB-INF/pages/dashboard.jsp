@@ -17,7 +17,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="DashBoard for Cloud4s">
-    <meta name="author" content="Cloud4S">
+    <meta name="author" content="Sameera">
 
     <title>DashBoard - Cloud4s</title>
 
@@ -25,6 +25,7 @@
     <link href='<c:url value="/css/jquery-ui.css" />' rel="stylesheet" type="text/css"/>
     <link href='<c:url value="/css/jquery-ui.theme.css" />' rel="stylesheet" type="text/css"/>
 
+    <script src="js/main.js"></script>
     <script src='<c:url value="/js/jquery.js" />' type="text/javascript"></script>
     <script src='<c:url value="/js/jquery-ui.js" />' type="text/javascript"></script>
 
@@ -193,6 +194,7 @@
                 url : "download",
                 data : "filename=" + values[0] + "&path=" + values[1]+"&username="+username,
                 success : function(response) {
+//                    alert(values[0]+" successfully downloaded.");
                     readFile(values[0]);
                 },
                 error : function(e) {
@@ -251,6 +253,7 @@
                 });
                 popup.dialog( "open" );
             });
+
         }
 
         //Share files with external users.
@@ -333,6 +336,8 @@
         function sendMails(fileName,reEncrypted,mailList,path){
             console.log("In function sendMails reEncrypted:"+reEncrypted);
             var alertPopup = $('#alertPopup');
+            var publicMode = $('#publicMode');
+            var ispublic = publicMode.is(':checked')
             $.ajax({
                 type : "GET",
                 url : "/shareFile",
@@ -343,7 +348,6 @@
                 success : function() {
                     $('#emailList').val("");
                     $('#currentEmail').val("");
-                    $('#recPubKey').val("");
                     alertPopup.prop('title', 'Success :)');
                     alertPopup.dialog("open");
                 },
@@ -436,8 +440,6 @@
             var blob = new Blob([contentBytes], {type: 'application/octet-stream'});
             saveAs(blob, filename);
             $('#alertPopup').dialog("close");
-
-
         }
 
         function readFile(filename){
@@ -451,7 +453,7 @@
                 processData:false, //To avoid making query String instead of JSON
                 success: function(data){
                     var json = JSON.parse(data);
-                    saveFile(json["encryptedKey"],json["fileContent"],filename);
+                    saveFileKey(json["encryptedKey"],json["fileContent"],filename);
                 }});
         }
 
@@ -528,9 +530,6 @@
 
         }
 
-
-
-
     </script>
 
 </head>
@@ -597,6 +596,13 @@
             <input type="text" id="publicKey" placeholder="public key" hidden="hidden" style="position: relative; width: 94%; left: 3%; top: 175px">
         </div>
     </div>
+<<<<<<< HEAD
+=======
+
+    <div id="alertPopup"  hidden="hidden">
+
+    </div>
+>>>>>>> 6b95246e1d680602ef74eddb7d627fc47dbbab23
 
     <%--notification alert--%>
     <div id="alertPopup" title=""  hidden="hidden"></div>
@@ -670,8 +676,6 @@
             alertPopup.append("<label>Uploading...</label>");
             alertPopup.dialog("open");
         });
-
-
 
     });
     function IsEmail(email) {

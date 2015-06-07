@@ -65,6 +65,7 @@ public class MainController {
 
     public UserDao userdao;
     public String encryptedFilekey = "";
+    String LocalPath="C:\\Users\\udeshi-p\\Downloads\\";
 
     DbxClient client;
 
@@ -122,6 +123,8 @@ public class MainController {
         } else {
             try {
                 client=dropboxapi.verify(code);
+//                dropboxapi.uploadFile(client,"C:/Users/hp/Downloads/dashboard.jsp","/dashboard.jsp");
+//                dropboxapi.loadfiles(client);
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (DbxException e) {
@@ -139,6 +142,7 @@ public class MainController {
 
         ModelAndView model = new ModelAndView();
         String LocalPath = FOLDER_PATH;
+
         try {
             Thread.sleep(5000);// have to remove wih proper mechanism
             dropboxapi.uploadFile(client,filename,LocalPath);
@@ -151,6 +155,7 @@ public class MainController {
         }finally {
 
         }
+
         model.setViewName("dashboard");
         return model;
     }
@@ -165,6 +170,7 @@ public class MainController {
                                   @ModelAttribute("shareBy")String shareBy){
 
         ModelAndView model = new ModelAndView();
+
         try {
             String Url_old= client.createShareableUrl(path);
             String Url = Url_old.substring(0, Url_old.length() - 1)+"1";
@@ -181,8 +187,9 @@ public class MainController {
     public String shareFile( @ModelAttribute("filename")String filename,
                              @ModelAttribute("to")String to,
                              @ModelAttribute("defileKey")String defileKey,
-                             @ModelAttribute("path")String path) {
-
+                             @ModelAttribute("path")String path,
+                             @ModelAttribute("public")boolean isPublic)
+    {
         JSONObject results= new JSONObject();
         try {
             String [] toArray = to.split("; ");
@@ -273,6 +280,7 @@ public class MainController {
         results.put("sharedFiles",listArray);
         System.out.println( results.toString() );
         return results.toString();
+
     }
 
 
@@ -501,6 +509,16 @@ public class MainController {
         fileKeyApiApi.saveFileKey(fileKey);
     }
 
+
+    @RequestMapping(value = { "/publicShare**" }, method = RequestMethod.GET)
+    public void publicShare(@ModelAttribute("fileUrl")String fileUrl,
+                          @ModelAttribute("key")String key )
+    {
+        //type http://localhost:8080/publicShare?fileUrl=http&key=123456
+        System.out.print("");
+    }
+
+
     //Share files with external users.
     @RequestMapping(value = { "/getFileKey" }, method = RequestMethod.GET)
     @ResponseBody
@@ -509,6 +527,7 @@ public class MainController {
                                     @ModelAttribute("userName")String userName) {
         //file path is get it can be usefull when generating dropbox link
         StringWriter out = new StringWriter();
+
         try {
             String fileKey = fileKeyApiApi.getFileKey(fileName,userName);
             JSONObject obj=new JSONObject();
@@ -521,8 +540,6 @@ public class MainController {
         System.out.println(jsonText);
         return  jsonText;
     }
-
-
 
     public boolean sendMail(String[] to,String filename,String defileKey,String path) {
         final String username = "cloud4s.cse@gmail.com";

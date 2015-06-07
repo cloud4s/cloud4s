@@ -24,21 +24,18 @@ public class DropBoxApiImpl implements DropBoxApi {
 //    public DbxWebAuthNoRedirect connect() throws IOException,DbxException {         //connect to dropbox .returns object of DbxClient.APP_KEY and APP_SECRET should be developers one.
     public void connect() throws IOException,DbxException {         //connect to dropbox .returns object of DbxClient.APP_KEY and APP_SECRET should be developers one.
 
-//        final String APP_KEY = "fs8foggwxwv107a";
-//        final String APP_SECRET = "r1xnydvhr3m6l55";
-        final String APP_KEY = "uthwboamsw1alja";
-        final String APP_SECRET = "izzrpf8qfw0veqw";
+        final String APP_KEY = "fs8foggwxwv107a";
+        final String APP_SECRET = "r1xnydvhr3m6l55";
 
         DbxAppInfo appInfo = new DbxAppInfo(APP_KEY, APP_SECRET);
 
-      this.config = new DbxRequestConfig("JavaTutorial/1.0",
-                Locale.getDefault().toString());
+        this.config = new DbxRequestConfig("JavaTutorial/1.0",Locale.getDefault().toString());
 
         DbxWebAuthNoRedirect webAuth = new DbxWebAuthNoRedirect(config, appInfo);
 
         // Have the user sign in and authorize your app.
         String authorizeUrl = webAuth.start();
-//        authorizeUrl += "&redirect_uri=http://localhost:8080/dash";
+        authorizeUrl += "&redirect_uri=http://localhost:8080/dash";
         System.out.println("1. Go to: " + authorizeUrl);
         System.out.println("2. Click \"Allow\" (you might have to log in first)");
         System.out.println("3. Copy the authorization code.");
@@ -100,6 +97,7 @@ public class DropBoxApiImpl implements DropBoxApi {
 //        FileOutputStream outputStream = new FileOutputStream("C:/Users/hp/Downloads/"+filename);
         FileOutputStream outputStream = new FileOutputStream(System.getProperty("user.home")+"/Downloads/"+filename);
 //        File inputFile = new File("C:/Users/hp/Downloads/"+filename);
+
         try {
             DbxEntry.File downloadedFile = client.getFile(path,null,outputStream);
             System.out.println("Metadata: " + downloadedFile.toString());

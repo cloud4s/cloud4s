@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@taglib prefix="sec"
-          uri="http://www.springframework.org/security/tags"%>
+<%@taglib prefix="sec" uri="http://www.springframework.org/security/tags"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <html lang="en">
 
@@ -53,7 +52,6 @@
         <%--<button class="btn btn-lg btn-primary btn-block" href="${fileUrl}"--%>
                 <%--onclick="decryptFileAndDownload()">Download</button>--%>
     </div>
-
 </div>
 <div>
     <input id="fileName" type="text" value="${fileName}">
@@ -61,6 +59,12 @@
     <input id="enFileKey" type="text" value="${enFileKey}">
 
 </div>
+
+        <button class="btn btn-lg btn-primary btn-block" onclick="decryptFileAndDownload()">Download</button>
+    </div>
+
+</div>
+
 
 <%--Footer--%>
 <jsp:include page="footer.jsp" />
@@ -110,8 +114,16 @@
         var blob = new Blob([contentBytes], {type: 'application/octet-stream'});//create the blob..
         saveAs(blob, filename);
     }
+    $(document).ready(function(){
 
+    });
 
+    function decryptFileAndDownload(){
+        //those fileURL and decryptedKey should be send via publicShare controller in maincontroller
+        //var fileURL=
+        //var decryptedKey=
+
+    }
 </script>
 </body>
 
